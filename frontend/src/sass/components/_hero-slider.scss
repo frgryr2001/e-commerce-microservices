@@ -132,11 +132,11 @@
       }
 
       .shape {
-        $size: 472px;
+        $size: 400px;
         height: $size;
         width: $size;
         position: absolute;
-        right: 0;
+        right: 25%;
         top: 50%;
         border-radius: 58% 42% 38% 62% / 42% 55% 45% 58%;
         transform: translate(0, -50%);
