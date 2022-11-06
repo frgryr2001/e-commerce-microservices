@@ -1,13 +1,14 @@
-import { Button, Checkbox, Form, Input } from "antd";
 import React from "react";
-import { Link } from "react-router-dom";
-const Login = () => {
+import { Button, Checkbox, Form, Input } from "antd";
+const ForgotPassword = () => {
   const onFinish = (values) => {
     console.log("Success:", values);
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   return (
     <Form
       name="basic"
@@ -24,7 +25,7 @@ const Login = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
-      <h1 style={{ textAlign: "center" }}>Đăng kí</h1>
+      <h1 style={{ textAlign: "center" }}>Quên mật khẩu</h1>
 
       <Form.Item
         label="email"
@@ -40,39 +41,18 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item
-        label="Mật khẩu"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Please input your password!",
-          },
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
-
-      <Form.Item
         name="remember"
         wrapperCol={{
           offset: 8,
           span: 8,
         }}
       >
-        <Link to="/forgotPassword">Quên mật khẩu</Link>
-      </Form.Item>
-
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 8,
-        }}
-      >
         <Button type="primary" htmlType="submit">
-          Submit
+          Gửi
         </Button>
       </Form.Item>
     </Form>
   );
 };
-export default Login;
+
+export default ForgotPassword;
