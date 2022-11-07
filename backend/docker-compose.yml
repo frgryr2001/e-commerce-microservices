@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+   rabbitmq:
+      image: rabbitmq:3.8-management-alpine
+      container_name: 'rabbitmq'
+      environment:
+         - RABBITMQ_DEFAULT_USER=admin
+         - RABBITMQ_DEFAULT_PASS=admin
+      ports:
+         # AMQP protocol port
+         - '5672:5672'
+         # HTTP management UI
+         - '15672:15672'
+      networks:
+         - rabbitmq_nodejs
+   auth:
+      build: ./auth
+      volumes:
+         - .:/src
+      environment:
+         - DB_CONNECTION_STRING="mongodb://mongo:27017/auth-services"
+      ports:
+         - '3000:3000'
+      depends_on:
+         - mongo
+   order:
+      build: ./orders
+      volumes:
+         - .:/src
+      environment:
+         - DB_CONNECTION_STRING="mongodb://mongo:27017/order-services"
+      ports:
+         - '3001:3001'
+      depends_on:
+         - rabbitmq
+         - mongo
+   product:
+      build: ./products
+      volumes:
+         - .:/src
+      environment:
+         - DB_CONNECTION_STRING="mongodb://mongo:27017/product-services"
+      ports:
+         - '3002:3002'
+      depends_on:
+         - mongo
+   mongo:
+      image: mongo
+      ports:
+         - '27017:27017'
+      volumes:
+         - ./data:/data/db
+
+volumes:
+   data-db:
+
+networks:
+   rabbitmq_nodejs:
+      driver: bridge

@@ -1,0 +1,17 @@
+{
+	"dependencies": {
+		"concurrently": "^7.5.0"
+	},
+	"name": "final",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "concurrently \"cd auth && npm start\" \"cd orders && npm start\" \"cd products && npm start\"",
+		"dev": "concurrently \"cd auth && npm run dev\" \"cd  orders && npm run dev\" \"cd products && npm run dev\"",
+		"install-all": "concurrently \"cd auth && npm i\" \"cd orders && npm i\" \"cd products && npm i\"",
+		"dasdas": "concurrently \"cd auth && npm i dotenv\" \"cd orders && npm i dotenv\" \"cd products && npm i dotenv\""
+	},
+	"author": "",
+	"license": "ISC",
+	"description": ""
+}
