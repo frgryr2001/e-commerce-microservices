@@ -35,6 +35,10 @@ app.use(
 	})
 );
 
+app.post('/test', async (req, res) => {
+	return res.json('test');
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));
@@ -52,7 +56,6 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(PORT, () => {
-	console.log(process.env);
 	console.log(`>>> App listening on port ${PORT}`);
 });
 

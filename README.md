@@ -33,3 +33,29 @@ nếu chưa build container thì chạy lệnh:
 
 docker-compose up --build
 
+## service:
+
+### auth:
+	- users
+	- admin
+### product:
+	- products
+	- option_product
+	- vouchers: code, expired.
+	- ware_house
+	- categories
+	- 
+### orders:
+	- orders
+front:
+- a.com
+client:
+	trang chủ
+	- dashboard khách hàng
+- b.com
+admin: 
+	- dashboard admin
+
+## GHN API:
+- token: 84516f27-5f78-11ed-bae6-52e24d27983f
+- shopid: 120614 - 0927055639

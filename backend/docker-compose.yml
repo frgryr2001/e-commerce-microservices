@@ -18,7 +18,7 @@ services:
       volumes:
          - .:/src
       environment:
-         - DB_CONNECTION_STRING="mongodb://mongo:27017/auth-services"
+         - DB_CONNECTION_STRING=mongodb://mongo:27017/auth-services
       ports:
          - '3000:3000'
       depends_on:
@@ -28,7 +28,7 @@ services:
       volumes:
          - .:/src
       environment:
-         - DB_CONNECTION_STRING="mongodb://mongo:27017/order-services"
+         - DB_CONNECTION_STRING=mongodb://mongo:27017/order-services
       ports:
          - '3001:3001'
       depends_on:
@@ -39,7 +39,7 @@ services:
       volumes:
          - .:/src
       environment:
-         - DB_CONNECTION_STRING="mongodb://mongo:27017/product-services"
+         - DB_CONNECTION_STRING=mongodb://mongo:27017/product-services
       ports:
          - '3002:3002'
       depends_on:
