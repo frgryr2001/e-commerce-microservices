@@ -1,5 +1,5 @@
 const userService = require("../services/userService");
-const User = require("../model/userModel");
+const User = require("../models/userModel");
 
 let refreshTokens = [];
 const userController = {
