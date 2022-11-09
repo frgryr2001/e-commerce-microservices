@@ -40,5 +40,23 @@ class userService {
     const token = jwt.sign({ id: user._id }, secretKey, { expiresIn: expires });
     return token;
   }
+  async refreshToken(user) {
+    const token = await this.generateToken(
+      user,
+      process.env.JWT_SECRET,
+      process.env.JWT_EXPIRES
+    );
+    const refreshToken = await this.generateToken(
+      user,
+      process.env.JWT_REFRESH_KEY,
+      process.env.JWT_REFRESH_EXPIRES
+    );
+    return { token, refreshToken };
+  }
+
+  async verifyToken(token, secretKey) {
+    const decoded = await jwt.verify(token, secretKey);
+    return decoded;
+  }
 }
 module.exports = new userService(User);
