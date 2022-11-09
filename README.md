@@ -65,7 +65,7 @@ front:
 
 <!-- auth service api -->
 
-## auth service api:
+## auth service api: (localhost:3000)
 
 - v1/api/auth/register - POST
   body: {
@@ -83,6 +83,9 @@ front:
   "email" : "..."
   "password": "..."
   }
+
+---
+
 - v1/api/auth/refresh-token - POST
 
 ---
