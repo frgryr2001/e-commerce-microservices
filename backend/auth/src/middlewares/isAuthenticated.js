@@ -1,6 +1,6 @@
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
-const User = require("../model/userModel");
+const User = require("../models/userModel");
 
 async function isAuthenticated(req, res, next) {
   const token = req.headers.authorization;
