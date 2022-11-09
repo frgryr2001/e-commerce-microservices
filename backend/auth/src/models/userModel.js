@@ -1,7 +1,7 @@
 // user model
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const crypto = require("crypto");
 const userSchema = new Schema(
   {
     fullname: {
@@ -60,6 +60,28 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // Hash token and set to resetPasswordToken field
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // date vietnamese
+  const dateVietNam = moment.tz(Date.now(), "Asia/Ho_Chi_Minh");
+  this.passwordResetExpires = dateVietNam + 10 * 60 * 1000;
+
+  return resetToken;
+};
 
 const User = mongoose.model("User", userSchema);
 
