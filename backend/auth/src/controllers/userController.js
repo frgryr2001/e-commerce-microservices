@@ -106,6 +106,31 @@ const userController = {
       res.status(500).json({ status: "fail", message: err.message });
     }
   },
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      await userService.forgotPassword(email, req, res);
+      res.status(200).json({
+        status: "success",
+        message: "Gửi email thành công",
+      });
+    } catch (err) {
+      res.status(500).json({ status: "fail", message: err.message });
+    }
+  },
+  async resetPassword(req, res) {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+      await userService.resetPassword(token, password);
+      res.status(200).json({
+        status: "success",
+        message: "Đổi mật khẩu thành công",
+      });
+    } catch (err) {
+      res.status(500).json({ status: "fail", message: err.message });
+    }
+  },
 };
 
 module.exports = userController;
