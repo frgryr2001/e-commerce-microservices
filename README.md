@@ -75,6 +75,9 @@ front:
   "phone" : "0123456789",
   "address": "Quận 7 , Hồ Chí Minh city"
   }
+
+---
+
 - v1/api/auth/login - POST
   body: {
   "email" : "..."
@@ -82,16 +85,24 @@ front:
   }
 - v1/api/auth/refresh-token - POST
 
+---
+
 - v1/api/auth/logout - GET
   {
   header: {
   Authorization: Bearer token
   }
   }
+
+---
+
 - v1/api/auth/forgotPassword - POST
   body: {
   "email": "..."
   }
+
+---
+
 - v1/api/auth/resetPassword - POST
   body: {
   "password": "..."
