@@ -1,12 +1,35 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from "@reduxjs/toolkit";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import { getPersistConfig } from "redux-deep-persist";
+import storage from "redux-persist/lib/storage";
+import rootReducer from "./rootReducer";
 
-import productModalReducer from './product-modal/productModalSlice'
+const persistConfig = getPersistConfig({
+  key: "root",
+  storage,
+  blacklist: ["productModal", "user.error"],
+  rootReducer,
+});
 
-import cartItemsReducer from './shopping-cart/cartItemsSlide'
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: {
-        productModal: productModalReducer,
-        cartItems: cartItemsReducer
-    },
-})
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+  devTools: process.env.NODE_ENV !== "production",
+});
+export const persistor = persistStore(store);

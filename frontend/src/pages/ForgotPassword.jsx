@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
+import { Link } from "react-router-dom";
 const ForgotPassword = () => {
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -39,9 +40,17 @@ const ForgotPassword = () => {
       >
         <Input />
       </Form.Item>
+      <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 8,
+        }}
+      >
+        <Link to="/login">&larr; Quay lại </Link>
+        {/* arrow html */}
+      </Form.Item>
 
       <Form.Item
-        name="remember"
         wrapperCol={{
           offset: 8,
           span: 8,

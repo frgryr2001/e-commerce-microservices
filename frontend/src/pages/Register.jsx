@@ -1,15 +1,37 @@
-import { Button, Checkbox, Form, Input } from "antd";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Button, Form, Input } from "antd";
+import React, { useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { fetchRegister } from "../redux/authentication/authSlice";
+
 const Register = () => {
+  const [form] = Form.useForm();
+  const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isAuthenticated) {
+      history.push("/");
+    }
+  }, [isAuthenticated, history]);
+
   const onFinish = (values) => {
-    console.log("Success:", values);
+    if (values.password !== values.confirmPassword) {
+      toast.error("Mật khẩu không khớp!");
+      return;
+    }
+    const { confirmPassword, ...other } = values;
+    const data = { ...other };
+
+    dispatch(fetchRegister({ data, toast, form }));
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
   return (
     <Form
+      form={form}
       name="basic"
       labelCol={{
         span: 8,
@@ -33,6 +55,10 @@ const Register = () => {
             required: true,
             message: "Vui lòng nhập họ tên!",
           },
+          {
+            min: 6,
+            message: "Họ tên phải có ít nhất 6 ký tự!",
+          },
         ]}
       >
         <Input />
@@ -44,6 +70,10 @@ const Register = () => {
           {
             required: true,
             message: "Vui lòng nhập email!",
+          },
+          {
+            type: "email",
+            message: "Email không hợp lệ!",
           },
         ]}
       >
@@ -57,13 +87,17 @@ const Register = () => {
             required: true,
             message: "Please input your password!",
           },
+          {
+            min: 6,
+            message: "Mật khẩu phải có ít nhất 6 ký tự!",
+          },
         ]}
       >
         <Input.Password />
       </Form.Item>
       <Form.Item
         label="Nhập lại mật khẩu"
-        name="confirm-password"
+        name="confirmPassword"
         rules={[
           {
             required: true,
@@ -81,6 +115,11 @@ const Register = () => {
             required: true,
             message: "Vui lòng nhập số điện thoại!",
           },
+          {
+            min: 10,
+            max: 11,
+            message: "Số điện thoại phải có ít nhất 10 ký tự!",
+          },
         ]}
       >
         <Input />
@@ -92,6 +131,10 @@ const Register = () => {
           {
             required: true,
             message: "Vui lòng nhập địa chỉ!",
+          },
+          {
+            min: 6,
+            message: "Địa chỉ phải có ít nhất 6 ký tự!",
           },
         ]}
       >
