@@ -122,6 +122,7 @@ const userController = {
     try {
       const { token } = req.params;
       const { password } = req.body;
+      console.log(token, password);
       await userService.resetPassword(token, password);
       res.status(200).json({
         status: "success",

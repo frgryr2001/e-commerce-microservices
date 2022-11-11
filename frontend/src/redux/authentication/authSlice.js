@@ -70,6 +70,56 @@ export const fetchLogout = createAsyncThunk(
   }
 );
 
+// forgot password thunk
+export const fetchForgotPassword = createAsyncThunk(
+  "authentication/fetchForgotPassword",
+  async ({ data, form, toast }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/v1/api/auth/forgotPassword/`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      toast.success("Đã gửi email thành công");
+      form.resetFields();
+      return response.data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+// reset password thunk
+export const fetchResetPassword = createAsyncThunk(
+  "authentication/fetchResetPassword",
+  async ({ data, token, toast, history }, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:3000/v1/api/auth/resetPassword/${token}`,
+        { password: data },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      toast.success("Đổi mật khẩu thành công");
+      history.push("/login");
+      return response.data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 // authentication slice
 export const authSlice = createSlice({
   name: "authentication",

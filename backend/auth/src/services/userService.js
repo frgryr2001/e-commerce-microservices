@@ -69,9 +69,7 @@ class userService {
     await user.save({ validateBeforeSave: false });
 
     // 3) Send it to user's email
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/v1/api/auth/resetPassword/${resetToken}`;
+    const resetURL = `${req.get("origin")}/resetPassword/${resetToken}`;
 
     const message = `Bạn đã quên mật khẩu? Hãy gửi yêu cầu đặt lại mật khẩu của bạn tới: ${resetURL}.\nNếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này!`;
 
@@ -89,21 +87,28 @@ class userService {
     }
   }
   async resetPassword(token, password) {
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    try {
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
 
-    const user = await this.userModel.findOne({
-      passwordResetToken: hashedToken,
-      passwordResetExpires: { $gt: Date.now() },
-    });
+      const user = await this.userModel.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() },
+      });
 
-    if (!user) {
+      if (!user) {
+        throw new Error("Token đã hết hạn hoặc không tồn tại");
+      }
+      user.password = password;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+      return user;
+    } catch (err) {
       throw new Error("Token đã hết hạn hoặc không tồn tại");
     }
-    user.password = password;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
-    return user;
   }
 }
 module.exports = new userService(User);

@@ -10,6 +10,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import TableHisPayment from "../components/TableHisPayment";
+import ResetPassword from "../pages/ResetPassword";
 
 const Routes = () => {
   // prevent url login if user is logged in
@@ -26,6 +27,7 @@ const Routes = () => {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/forgotPassword" component={ForgotPassword} />
+      <Route path="/resetPassword/:token" component={ResetPassword} />
     </Switch>
   );
 };
