@@ -8,7 +8,6 @@ const userSchema = new Schema(
   {
     fullname: {
       type: String,
-      required: true,
       minlength: 2,
     },
     password: {
@@ -41,7 +40,7 @@ const userSchema = new Schema(
     address: {
       type: String,
       required: true,
-      trim: true,
+
       minlength: 3,
     },
     avatar: {

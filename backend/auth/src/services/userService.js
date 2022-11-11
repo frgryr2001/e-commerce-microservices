@@ -1,7 +1,8 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const User = require("../model/userModel");
+const bcrypt = require("bcrypt");
+
+const User = require("../models/userModel");
 const sendEmail = require("../utils/email");
 class userService {
   constructor(userModel) {
@@ -15,11 +16,10 @@ class userService {
     if (userExists) {
       throw new Error("Email này đã tồn tại");
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(password, salt);
+    // const hashPassword = await bcrypt.hash(password, salt);
     const newUser = await this.userModel.create({
       fullname,
-      password: hashPassword,
+      password,
       email,
       phone,
       address,
@@ -60,7 +60,7 @@ class userService {
     const decoded = await jwt.verify(token, secretKey);
     return decoded;
   }
-  async forgotPassword(email) {
+  async forgotPassword(email, req, res) {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new Error("Email không tồn tại");
@@ -69,9 +69,7 @@ class userService {
     await user.save({ validateBeforeSave: false });
 
     // 3) Send it to user's email
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/v1/api/auth/resetPassword/${resetToken}`;
+    const resetURL = `${req.get("origin")}/resetPassword/${resetToken}`;
 
     const message = `Bạn đã quên mật khẩu? Hãy gửi yêu cầu đặt lại mật khẩu của bạn tới: ${resetURL}.\nNếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này!`;
 
@@ -81,35 +79,36 @@ class userService {
         subject: "Đặt lại mật khẩu của bạn (Thời hạn 10 phút)",
         message,
       });
-
-      res.status(200).json({
-        status: "success",
-        message: "Token sent to email!",
-      });
     } catch (err) {
       user.passwordResetToken = undefined;
       user.passwordResetExpires = undefined;
       await user.save({ validateBeforeSave: false });
-      return next(err);
+      throw new Error("Gửi email thất bại");
     }
   }
   async resetPassword(token, password) {
-    // 1) Get user based on the token
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    try {
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
 
-    const user = await this.userModel.findOne({
-      passwordResetToken: hashedToken,
-      passwordResetExpires: { $gt: Date.now() },
-    });
-    // 2) If token has not expired, and there is user, set the new password
-    if (!user) {
+      const user = await this.userModel.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        throw new Error("Token đã hết hạn hoặc không tồn tại");
+      }
+      user.password = password;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+      return user;
+    } catch (err) {
       throw new Error("Token đã hết hạn hoặc không tồn tại");
     }
-    user.password = password;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save();
-    return user;
   }
 }
 module.exports = new userService(User);

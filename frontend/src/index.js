@@ -2,19 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 
-import { store } from "./redux/store";
+import { persistor, store } from "./redux/store";
 import { Provider } from "react-redux";
 
 import "./assets/boxicons-2.0.7/css/boxicons.min.css";
 import "./sass/index.scss";
 import "antd/dist/antd.css";
-
+import { PersistGate } from "redux-persist/lib/integration/react";
 import Layout from "./components/Layout";
-
+import "react-toastify/dist/ReactToastify.css";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Layout />
+      <PersistGate loading={null} persistor={persistor}>
+        <Layout />
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

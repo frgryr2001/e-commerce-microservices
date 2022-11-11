@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
 import logo from "../assets/images/SOA.png";
@@ -16,6 +17,7 @@ const mainNav = [
 
 const Header = () => {
   const { pathname } = useLocation();
+  const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
   const activeNav = mainNav.findIndex((e) => e.path === pathname);
 
   const headerRef = useRef(null);
@@ -93,21 +95,38 @@ const Header = () => {
               {/* ul li */}
               <div className="header__menu__user">
                 <ul className="header__menu__list">
-                  <li style={{ padding: "10px 0px" }}>
-                    <Link to="/login" className="header__menu__list__item">
-                      Đăng nhập
-                    </Link>
-                  </li>
-                  <li style={{ padding: "10px 0px" }}>
-                    <Link to="/register" className="header__menu__list__item">
-                      Đăng ký
-                    </Link>
-                  </li>
-                  <li style={{ padding: "10px 0px" }}>
-                    <Link to="/register" className="header__menu__list__item">
-                      Thông tin cá nhân
-                    </Link>
-                  </li>
+                  {!isAuthenticated && (
+                    <li style={{ padding: "10px 0px" }}>
+                      <Link to="/login" className="header__menu__list__item">
+                        Đăng nhập
+                      </Link>
+                    </li>
+                  )}
+
+                  {isAuthenticated && (
+                    <li style={{ padding: "10px 0px" }}>
+                      <Link to="/profile" className="header__menu__list__item">
+                        Thông tin cá nhân
+                      </Link>
+                    </li>
+                  )}
+                  {isAuthenticated && (
+                    <li style={{ padding: "10px 0px" }}>
+                      <Link
+                        to="/purchase-history"
+                        className="header__menu__list__item"
+                      >
+                        Lịch sử mua hàng
+                      </Link>
+                    </li>
+                  )}
+                  {isAuthenticated && (
+                    <li style={{ padding: "10px 0px" }}>
+                      <Link to="/logout" className="header__menu__list__item">
+                        Đăng xuất
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
