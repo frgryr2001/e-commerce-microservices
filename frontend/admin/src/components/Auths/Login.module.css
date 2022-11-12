@@ -1,0 +1,152 @@
+.social__login img {
+  width: 24px;
+}
+
+.body__login {
+  width: 100%;
+  height: 100vh;
+  background-color: #ddeefc;
+  padding-top: 10vh;
+}
+
+.card {
+  font-family: sans-serif;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  /* margin-top: 10vh; */
+  margin-bottom: 3em;
+  border-radius: 10px;
+  background-color: #ffff;
+  padding: 1.8rem;
+  box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+}
+.subtitle {
+  text-align: center;
+  font-weight: bold;
+}
+
+.subtitle a {
+  color: var(--bg-color);
+}
+
+.btn__text {
+  margin: 0;
+}
+
+.social__login {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.or {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid rgb(245 239 239);
+  line-height: 0.1em;
+  margin: 25px 0;
+}
+.or span {
+  background: #fff;
+  padding: 0 10px;
+}
+
+.email__login {
+  display: flex;
+  flex-direction: column;
+}
+.email__login label {
+  color: rgb(170 166 166);
+}
+
+/* input[type="text"],
+input[type="password"] {
+  padding: 15px 20px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+} */
+
+.cta__btn {
+  background-color: var(--bg-color);
+  color: white;
+  padding: 15px 20px;
+  margin-top: 25px;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.forget__pass {
+  text-align: center;
+  display: block;
+  color: var(--bg-color);
+}
+
+/* body {
+  background-color: #e6eeff;
+} */
+
+.input__login {
+  position: relative;
+}
+
+.input {
+  color: #000;
+  outline: 2px solid #fff;
+  width: 100%;
+  padding: 15px 20px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font: inherit;
+  background-color: transparent;
+  outline: 2px solid #fff;
+}
+
+.input__label {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  transform: translate(10px, 10px);
+  transition: transform 0.25s;
+  color: #adafca;
+  font-size: inherit;
+  padding-left: 10px;
+}
+
+.input:focus ~ .input__label,
+.input:valid ~ .input__label {
+  transform: translate(10px, -14px) scale(0.9);
+  color: var(--bg-color);
+  padding-inline: 5px;
+  background-color: #fff;
+}
+.input:is(:focus, :valid) {
+  outline-color: var(--bg-color);
+}
+
+input__login,
+.input__label,
+.input:hover {
+  cursor: auto;
+}
+
+.error {
+  color: #ff5252;
+  padding-left: 10px;
+}

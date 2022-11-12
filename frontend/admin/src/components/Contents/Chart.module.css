@@ -1,0 +1,13 @@
+.wrapper {
+  width: calc(100% - var(--nav-width));
+  height: 100vh;
+  margin-left: var(--nav-width);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chart {
+  width: 70%;
+
+  height: fit-content;
+}
