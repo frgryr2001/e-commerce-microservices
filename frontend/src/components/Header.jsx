@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import logo from "../assets/images/SOA.png";
+import { fetchLogout, loginSuccess } from "../redux/authentication/authSlice";
+import { createAxios } from "../utils/apiRequets";
 
 const mainNav = [
   {
@@ -18,8 +20,13 @@ const mainNav = [
 const Header = () => {
   const { pathname } = useLocation();
   const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
+  const user = useSelector((state) => state.user?.user);
+  const token = useSelector((state) => state.user?.token);
+  const dispatch = useDispatch();
+  const history = useHistory();
   const activeNav = mainNav.findIndex((e) => e.path === pathname);
-
+  console.log("token", token);
+  const axiosJWT = createAxios(user, token, dispatch, loginSuccess);
   const headerRef = useRef(null);
 
   useEffect(() => {
@@ -41,6 +48,9 @@ const Header = () => {
   const menuLeft = useRef(null);
 
   const menuToggle = () => menuLeft.current.classList.toggle("active");
+  const logoutHandler = () => {
+    dispatch(fetchLogout({ axiosJWT, token, history }));
+  };
 
   return (
     <div className="header" ref={headerRef}>
@@ -122,7 +132,11 @@ const Header = () => {
                   )}
                   {isAuthenticated && (
                     <li style={{ padding: "10px 0px" }}>
-                      <Link to="/logout" className="header__menu__list__item">
+                      <Link
+                        to="/logout"
+                        className="header__menu__list__item"
+                        onClick={logoutHandler}
+                      >
                         Đăng xuất
                       </Link>
                     </li>

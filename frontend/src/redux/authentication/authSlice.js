@@ -28,7 +28,7 @@ export const fetchLogin = createAsyncThunk(
       history.push("/");
       return response.data;
     } catch (err) {
-      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
       return rejectWithValue(err.response.data.message);
     }
   }
@@ -60,9 +60,18 @@ export const fetchRegister = createAsyncThunk(
 // logout thunk
 export const fetchLogout = createAsyncThunk(
   "authentication/fetchLogout",
-  async ({ axiosJWT }, { rejectWithValue }) => {
+  async ({ axiosJWT, token, history }, { rejectWithValue }) => {
     try {
-      const response = await axiosJWT.get("localhost:3000/v1/api/auth/logout");
+      const response = await axiosJWT.get(
+        "http://localhost:3000/v1/api/auth/logout",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      history.push("/login");
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -130,6 +139,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.status = "succeeded";
+      // state.error = null;
     },
 
     // logoutUser: (state) => {
@@ -160,6 +170,20 @@ export const authSlice = createSlice({
       state.status = "succeeded";
     },
     [fetchRegister.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    },
+    [fetchLogout.pending]: (state) => {
+      state.status = "loading";
+    },
+    [fetchLogout.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
+      state.error = null;
+    },
+    [fetchLogout.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
     },
