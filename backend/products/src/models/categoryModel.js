@@ -12,12 +12,17 @@ const categorySchema = new Schema(
 		slug: {
 			type: String,
 			trim: true,
-			default: removeVietnameseTones(this.name),
+			default: '',
 		},
 	},
 	{
 		timestamps: true,
 	}
 );
+categorySchema.pre("save", async function (next) {
 
+	this.slug = removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`;
+
+	next();
+ });
 const Category = mongoose.model('Category', categorySchema);

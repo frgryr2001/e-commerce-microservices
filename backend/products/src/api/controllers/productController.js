@@ -48,7 +48,7 @@ class ProductController {
 		if (!errors.isEmpty()) {
 			return res
 				.status(400)
-				.json({ status: 'Thất bại', errors: errors.array()[0].msg });
+				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
 			let {
 				name,
@@ -68,7 +68,7 @@ class ProductController {
 				if (product) {
 					return res
 						.status(400)
-						.json({ status: 'Thất bại', errors: 'Sản phẩm đã tồn tại' });
+						.json({ status: 'Thất bại', message: 'Sản phẩm đã tồn tại' });
 				}
 				const images = [];
 				const arr_product_options = [];
@@ -131,7 +131,9 @@ class ProductController {
 				});
 			} catch (error) {
 				console.error(error.message);
-				return res.status(500).json('Server Error');
+				return res
+					.status(400)
+					.json({ status: 'Thất bại', message: 'Thêm sản phẩm thất bại!' });
 			}
 		}
 	}
@@ -141,7 +143,7 @@ class ProductController {
 		if (!errors.isEmpty()) {
 			return res
 				.status(400)
-				.json({ status: 'Thất bại', errors: errors.array()[0].msg });
+				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
 			let {
 				name,
@@ -162,7 +164,7 @@ class ProductController {
 				if (!product) {
 					return res
 						.status(400)
-						.json({ status: 'Thất bại', errors: 'Sản phẩm không tồn tại' });
+						.json({ status: 'Thất bại', message: 'Sản phẩm không tồn tại' });
 				}
 				const images = product_images;
 				const arr_product_options = [];
@@ -224,7 +226,10 @@ class ProductController {
 				});
 			} catch (error) {
 				console.error(error.message);
-				return res.status(500).json('Server Error');
+				return res.status(400).json({
+					message: 'Cập nhập sản phẩm không thành công!',
+					status: 'Thất bại',
+				});
 			}
 		}
 	}
@@ -248,8 +253,7 @@ class ProductController {
 					.then(async response => {
 						await product_images[i].remove();
 					})
-					.catch(err => {
-					});
+					.catch(err => {});
 			}
 			await product.remove();
 			return await res.status(200).json({
@@ -258,7 +262,10 @@ class ProductController {
 			});
 		} catch (error) {
 			console.error(error.message);
-			return res.status(500).json('Server Error');
+			return res.status(400).json({
+				message: 'Xóa sản phẩm không thành công',
+				status: 'Thất bại',
+			});
 		}
 	}
 }

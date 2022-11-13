@@ -40,7 +40,7 @@ const productSchema = new Schema(
 		slug: {
 			type: String,
 			trim: true,
-			default: removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`,
+			default: '',
 		},
 		sale_off_price: {
 			type: Number,
@@ -55,5 +55,10 @@ const productSchema = new Schema(
 		timestamps: true,
 	}
 );
+
+productSchema.pre('save', async function (next) {
+	this.slug = removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`;
+	next();
+});
 
 module.exports = mongoose.model('Product', productSchema);

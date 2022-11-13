@@ -152,3 +152,12 @@ exports.updateProductValidator = [
 		return true;
 	}),
 ];
+
+
+exports.categoryValidator = [
+	check('name')
+		.exists()
+		.withMessage('Vui lòng nhập tên danh mục')
+		.notEmpty()
+		.withMessage('Vui lòng nhập tên danh mục'),
+];
