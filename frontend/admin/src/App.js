@@ -8,7 +8,7 @@ import Customers from "./components/Contents/Customers";
 import Promotion from "./components/Contents/Promotion/Promotion";
 
 import Dashboard from "./components/Contents/Dashboard";
-import Products from "./components/Product/Products";
+import Products from "./components/Contents/Product/Products";
 function App() {
   return (
     <>

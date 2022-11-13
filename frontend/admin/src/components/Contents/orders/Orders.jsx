@@ -19,7 +19,7 @@ const Orders = () => {
         title: "Hình sản phẩm",
         dataIndex: "img",
         key: "img",
-        render: (text) => (
+        render: (img) => (
           <img
             width={100}
             src="https://i0.wp.com/epthinktank.eu/wp-content/uploads/2021/09/EPRS-Briefing-698028-General-product-safety-regulation-FINAL.png?fit=1000%2C666&ssl=1"
