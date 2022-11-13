@@ -12,7 +12,7 @@ const app = express();
 const connect = require('./database/db');
 
 const productRouter = require('./api/routes/productRoute');
-
+const categoryRouter = require('./api/routes/categoryRoute');
 
 connect();
 app.set('trust proxy', 1);

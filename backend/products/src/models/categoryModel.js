@@ -25,4 +25,4 @@ categorySchema.pre("save", async function (next) {
 
 	next();
  });
-const Category = mongoose.model('Category', categorySchema);
+module.exports = mongoose.model('Category', categorySchema);

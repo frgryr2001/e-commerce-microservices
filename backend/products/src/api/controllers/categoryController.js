@@ -1,4 +1,4 @@
-const Category = require('../models/categoryModel');
+const Category = require('../../models/categoryModel');
 const { validationResult } = require('express-validator');
 
 //
@@ -6,7 +6,7 @@ const { validationResult } = require('express-validator');
 // @desc    Get all categories
 // @access  Public
 
-export class CategoryController {
+class CategoryController {
 	async getAllCategories(req, res) {
 		try {
 			const categories = await Category.find();
@@ -135,3 +135,5 @@ export class CategoryController {
 		}
 	}
 }
+
+module.exports = new CategoryController();

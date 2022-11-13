@@ -12,3 +12,5 @@ router.post('/', categoryValidator, categoryController.createCategory);
 router.put('/:id', categoryValidator, categoryController.updateCategory);
 
 router.delete('/:id', categoryValidator, categoryController.deleteCategory);
+
+module.exports = router;
