@@ -1,0 +1,39 @@
+.card {
+  height: 200px;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+
+  background-color: #fff;
+  box-shadow: 0px 11px 64px -59px rgba(0, 0, 0, 0.89);
+  -webkit-box-shadow: 0px 11px 64px -59px rgba(0, 0, 0, 0.89);
+  -moz-box-shadow: 0px 11px 64px -59px rgba(0, 0, 0, 0.89);
+  padding: 0 30px 0 30px;
+  color: var(--bg-color);
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+.card.active {
+  background-color: var(--bg-color);
+  color: #fff;
+}
+.header_card {
+  width: 100%;
+  height: 50%;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+}
+.header_card > h1 {
+  font-weight: 100;
+}
+
+.card_bottom > h1 {
+  font-size: 35px;
+  font-weight: 100;
+}
+
+.card_bottom > h3 {
+  opacity: 0.89;
+}
