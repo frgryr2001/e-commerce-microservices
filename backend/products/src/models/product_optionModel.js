@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const productOptionSchema = new Schema(
 	{
-		id_product: {
+		product_id: {
 			type: String,
 			required: true,
 			trim: true,
@@ -23,4 +23,4 @@ const productOptionSchema = new Schema(
 	}
 );
 
-const ProductOption = mongoose.model('ProductOption', productOptionSchema);
+module.exports = mongoose.model('ProductOption', productOptionSchema);

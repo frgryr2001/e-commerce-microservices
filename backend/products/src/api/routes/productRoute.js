@@ -1,9 +1,22 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const categoryController = require("../controllers/categoryController");
+const productController = require('../controllers/productController');
+const upload = require('../middlewares/uploadMiddleware');
+const {
+	productValidator,
+	uploadValidator,
+	updateProductValidator,
+} = require('../validator/validator');
+router.get('/', productController.getAllProducts);
+router.get('/:id', productController.getProductById);
 
-router.get("/", categoryController.getAllCategories);
-router.get("/:id", categoryController.getCategoryById);
-router.post("/", categoryController.createCategory);
-router.put("/:id", categoryController.updateCategory);
-router.delete("/:id", categoryController.deleteCategory);
+router.post(
+	'/',
+	/* uploadValidator, */ upload,
+	productValidator,
+	productController.createProduct
+);
+router.put('/:id', upload, updateProductValidator, productController.updateProduct);
+router.delete('/:id', productController.deleteProduct);
+
+module.exports = router;

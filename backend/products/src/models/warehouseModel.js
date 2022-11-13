@@ -33,3 +33,5 @@ const warehouseSchema = new Schema(
 		createAt: true,
 	}
 );
+
+module.exports = mongoose.model('Warehouse', warehouseSchema);
