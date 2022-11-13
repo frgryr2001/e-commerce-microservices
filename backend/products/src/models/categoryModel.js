@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-import removeVietnameseTones from '../utils/removeVietnameseTones';
+const removeVietnameseTones = require ('../utils/removeVietnameseTones');
 const Schema = mongoose.Schema;
 
 const categorySchema = new Schema(
@@ -12,7 +12,7 @@ const categorySchema = new Schema(
 		slug: {
 			type: String,
 			trim: true,
-			default: removeVietnameseTones(name),
+			default: removeVietnameseTones(this.name),
 		},
 	},
 	{

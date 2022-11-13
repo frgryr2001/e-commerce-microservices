@@ -10,6 +10,10 @@ const PORT = process.env.PORT || 3002;
 const app = express();
 // connect to mongodb
 const connect = require('./database/db');
+
+const productRouter = require('./api/routes/productRoute');
+
+
 connect();
 app.set('trust proxy', 1);
 app.use(
@@ -34,6 +38,8 @@ app.use(
 		},
 	})
 );
+
+app.use('/api/products', productRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
