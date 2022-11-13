@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import { Form, Input, Button, DatePicker } from "antd";
 import ListPromotion from "../ListPromotion";
 const { RangePicker } = DatePicker;
@@ -19,7 +18,9 @@ const Promotion = () => {
         <Form.Item label="Thêm mã khuyến mãi">
           <Input />
         </Form.Item>
-
+        <Form.Item label="Giá trị">
+          <Input />
+        </Form.Item>
         <Form.Item label="Hạn sử dụng">
           <RangePicker />
         </Form.Item>
