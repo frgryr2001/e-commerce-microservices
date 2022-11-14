@@ -47,15 +47,14 @@ exports.productValidator = [
     .withMessage("Vui lòng nhập kiểu sản phẩm")
     .custom((raw, { req }) => {
       let value = JSON.parse(JSON.stringify(raw));
-      console.log(typeof value);
-      console.log(req.body);
+
 
       if (value.length === 0) {
         throw new Error("Vui lòng nhập kiểu sản phẩm");
       }
 
       value.forEach((item) => {
-        console.log(typeof item);
+
         if (!item.size || !item.quantity || !item.color) {
           throw new Error(
             "Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)"
@@ -79,7 +78,12 @@ exports.productValidator = [
   check("images").custom(async (file, { req }) => {
     if (!req.files) {
       throw new Error("Vui lòng thêm ảnh");
+
     } else {
+      if(!req.files[0]) {
+        throw new Error("Vui lòng thêm ảnh");
+      }
+      console.log(req.files)
       const filetypes = /jpeg|jpg|png|gif/;
       req.files.forEach((file) => {
         if (!filetypes.test(file.mimetype)) {
