@@ -9,6 +9,7 @@ import Promotion from "./components/Contents/Promotion/Promotion";
 
 import Dashboard from "./components/Contents/Dashboard";
 import Products from "./components/Contents/Product/Products";
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <>
@@ -23,6 +24,7 @@ function App() {
           <Route path="/promotions" element={<Promotion />} />
           <Route path="/products" element={<Products />} />
         </Routes>
+        <ToastContainer />
       </Router>
     </>
   );

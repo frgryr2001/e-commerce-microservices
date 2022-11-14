@@ -3,12 +3,13 @@ import React from "react";
 
 import { Form, Modal } from "antd";
 import FormCustom from "../Contents/FormCustomProduct/FormCustom";
-
+import { useDispatch } from "react-redux";
+import { createProduct } from "../../redux/Products/productSlice";
 export default function ModalWithForm({ visible, setVisible }) {
   const [form] = Form.useForm();
-
+  const dispatch = useDispatch();
   const onFinish = (values) => {
-    console.log(values);
+    dispatch(createProduct(values));
   };
 
   const handleCancel = () => {
