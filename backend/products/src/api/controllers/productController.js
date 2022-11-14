@@ -89,6 +89,7 @@ class ProductController {
             product_id: product._id,
             size: product_options[i].size,
             quantity: product_options[i].quantity,
+            color: product_options[i].color,
           });
           await arr_product_options.push(productOption);
           console.log(arr_product_options);
@@ -185,6 +186,7 @@ class ProductController {
             product_id: product._id,
             size: product_options[i].size,
             quantity: product_options[i].quantity,
+            color: product_options[i].color,
           });
           await arr_product_options.push(productOption);
           console.log(arr_product_options);

@@ -110,3 +110,18 @@ front:
   body: {
   "password": "..."
   }
+
+
+
+
+order {
+  
+  order_detail {
+    id_order
+    id_product
+    color
+    size 
+    quantity
+  }
+
+}
