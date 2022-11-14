@@ -13,6 +13,7 @@ const connect = require('./database/db');
 
 const productRouter = require('./api/routes/productRoute');
 const categoryRouter = require('./api/routes/categoryRoute');
+const voucherRouter = require('./api/routes/voucherRoute');
 
 connect();
 app.set('trust proxy', 1);
@@ -41,6 +42,7 @@ app.use(
 
 app.use('/api/products', productRouter);
 app.use('/api/category', categoryRouter);
+app.use('/api/voucher', voucherRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

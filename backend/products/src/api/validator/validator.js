@@ -1,5 +1,6 @@
 const upload = require('../middlewares/uploadMiddleware');
 const { check, body } = require('express-validator');
+const Voucher = require('../../models/voucherModel');
 exports.uploadValidator = (req, res, next) => {
 	upload(req, res, err => {
 		if (err instanceof multer.MulterError) {
@@ -51,11 +52,15 @@ exports.productValidator = [
 			}
 			//console.log(value)
 			value.forEach(item => {
-				if (!item.size || !item.quantity  || !item.color) {
-					throw new Error('Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)');
+				if (!item.size || !item.quantity || !item.color) {
+					throw new Error(
+						'Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)'
+					);
 				}
 				if (item.size === '' || item.quantity === '' || item.color === '') {
-					throw new Error('Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)');
+					throw new Error(
+						'Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)'
+					);
 				}
 			});
 			return true;
@@ -153,11 +158,100 @@ exports.updateProductValidator = [
 	}),
 ];
 
-
 exports.categoryValidator = [
 	check('name')
 		.exists()
 		.withMessage('Vui lòng nhập tên danh mục')
 		.notEmpty()
 		.withMessage('Vui lòng nhập tên danh mục'),
+];
+
+exports.voucherValidator = [
+	check('code')
+		.exists()
+		.withMessage('Vui lòng nhập mã voucher')
+		.notEmpty()
+		.withMessage('Vui lòng nhập mã voucher')
+		.custom(async (code, { req }) => {
+			let voucher = await Voucher.findOne({ code });
+			console.log(voucher);
+			if (voucher) {
+				throw new Error('Mã voucher đã tồn tại');
+			}
+			return true;
+		}),
+	check('discount')
+		.exists()
+		.withMessage('Vui lòng nhập giảm giá')
+		.isInt({ min: 1, max: 100 })
+		.withMessage('Vui lòng nhập phần trăm giảm giá ( nhỏ nhất là 1, lớn nhất là 100)'),
+	check('amount')
+		.exists()
+		.withMessage('Vui lòng nhập số lượng')
+		/* 		.isEmpty()
+		.withMessage('Vui lòng nhập số lượng') */
+		.isInt({ min: 1 })
+		.withMessage('Vui lòng nhập số lượng ( nhỏ nhất là 1)'),
+
+	check('expiredDate')
+		.exists()
+		.withMessage('Vui lòng nhập ngày hết hạn')
+		.notEmpty()
+		.withMessage('Vui lòng nhập ngày hết hạn')
+		.isDate()
+		.withMessage('Ngày hết hạn thẻ không hợp lệ')
+		.custom((expired, { req }) => {
+			const expiredDate = new Date(expired);
+			const currentDate = new Date();
+			if (expiredDate < currentDate) {
+				throw new Error('Ngày hết hạn thẻ không hợp lệ');
+			}
+			return true;
+		}),
+];
+
+exports.updateVoucherValidator = [
+	check('code')
+		.exists()
+		.withMessage('Vui lòng nhập mã voucher')
+		.notEmpty()
+		.withMessage('Vui lòng nhập mã voucher')
+		.custom(async (code, { req }) => {
+			let voucher = await Voucher.findOne({ code });
+			console.log(voucher);
+			if (voucher) {
+				if (voucher._id.toString() !== req.params.id) {
+					throw new Error('Mã voucher đã tồn tại');
+				}
+			}
+			return true;
+		}),
+	check('discount')
+		.exists()
+		.withMessage('Vui lòng nhập giảm giá')
+		.isInt({ min: 1, max: 100 })
+		.withMessage('Vui lòng nhập phần trăm giảm giá ( nhỏ nhất là 1, lớn nhất là 100)'),
+	check('amount')
+		.exists()
+		.withMessage('Vui lòng nhập số lượng')
+		/* 		.isEmpty()
+		.withMessage('Vui lòng nhập số lượng') */
+		.isInt({ min: 1 })
+		.withMessage('Vui lòng nhập số lượng ( nhỏ nhất là 1)'),
+
+	check('expiredDate')
+		.exists()
+		.withMessage('Vui lòng nhập ngày hết hạn')
+		.notEmpty()
+		.withMessage('Vui lòng nhập ngày hết hạn')
+		.isDate()
+		.withMessage('Ngày hết hạn thẻ không hợp lệ')
+		.custom((expired, { req }) => {
+			const expiredDate = new Date(expired);
+			const currentDate = new Date();
+			if (expiredDate < currentDate) {
+				throw new Error('Ngày hết hạn thẻ không hợp lệ');
+			}
+			return true;
+		}),
 ];

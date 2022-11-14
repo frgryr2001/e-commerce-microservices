@@ -28,6 +28,12 @@ class CategoryController {
 	async getCategoryById(req, res) {
 		try {
 			const category = await Category.findById(req.params.id);
+			if(!category) {
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Không tìm thấy danh mục!',
+				});
+			}
 			res.status(200).json({ status: 'Thành công', category: category });
 		} catch (err) {
 			console.error(err.message);

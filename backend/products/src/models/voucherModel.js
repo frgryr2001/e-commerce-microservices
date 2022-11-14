@@ -9,17 +9,18 @@ const voucherSchema = new Schema(
 			required: true,
 			trim: true,
 		},
-		percent: {
+		discount : {
 			type: Number,
-			default: 0,
-			min: 0,
+			default: 1,
+			min: 1,
 			max: 100,
 		},
 		amount: {
-			type: BigInt,
-			default: 1000000000000000000,
+			type: Number,
+			default: 100000000,
+			min: 1,
 		},
-		expired: {
+		expiredDate: {
 			type: Date,
 			required: true,
 		},
@@ -30,4 +31,11 @@ const voucherSchema = new Schema(
 	}
 );
 
+//.replace(/\s+/, "") 
+voucherSchema.pre("save", async function (next) {
+
+	this.code = this.code.replace(/ /g, '').toLowerCase() ; ;
+
+	next();
+ });
 module.exports = mongoose.model('Voucher', voucherSchema);
