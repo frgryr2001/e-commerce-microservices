@@ -51,11 +51,11 @@ exports.productValidator = [
 			}
 			//console.log(value)
 			value.forEach(item => {
-				if (!item.size || !item.quantity) {
-					throw new Error('Vui lòng nhập kiểu sản phẩm và số lượng');
+				if (!item.size || !item.quantity  || !item.color) {
+					throw new Error('Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)');
 				}
-				if (item.size === '' || item.quantity === '') {
-					throw new Error('Vui lòng nhập đủ thông tin kiểu sản phẩm');
+				if (item.size === '' || item.quantity === '' || item.color === '') {
+					throw new Error('Vui lòng nhập đầy kiểu sản phẩm (số lượng, màu, kích thước)');
 				}
 			});
 			return true;
@@ -123,10 +123,10 @@ exports.updateProductValidator = [
 			}
 			//console.log(value)
 			value.forEach(item => {
-				if (!item.size || !item.quantity) {
+				if (!item.size || !item.quantity || !item.color) {
 					throw new Error('Vui lòng nhập kiểu sản phẩm và số lượng');
 				}
-				if (item.size === '' || item.quantity === '') {
+				if (item.size === '' || item.quantity === '' || item.color === '') {
 					throw new Error('Vui lòng nhập đủ thông tin kiểu sản phẩm');
 				}
 			});

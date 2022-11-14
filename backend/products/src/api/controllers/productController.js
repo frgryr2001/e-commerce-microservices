@@ -73,7 +73,6 @@ class ProductController {
             .status(400)
             .json({ status: "Thất bại", message: "Sản phẩm đã tồn tại" });
         }
-
         const images = [];
         const arr_product_options = [];
         product = await new Product({
