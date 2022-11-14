@@ -21,7 +21,7 @@ const categorySchema = new Schema(
 );
 categorySchema.pre("save", async function (next) {
 
-	this.slug = removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`;
+	this.slug = removeVietnameseTones(this.name) ;
 
 	next();
  });

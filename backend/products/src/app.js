@@ -40,6 +40,7 @@ app.use(
 );
 
 app.use('/api/products', productRouter);
+app.use('/api/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
