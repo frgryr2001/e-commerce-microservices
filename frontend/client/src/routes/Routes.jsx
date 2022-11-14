@@ -13,8 +13,6 @@ import TableHisPayment from "../components/TableHisPayment";
 import ResetPassword from "../pages/ResetPassword";
 
 const Routes = () => {
-  // prevent url login if user is logged in
-
   return (
     <Switch>
       <Route path="/" exact component={Home} />
