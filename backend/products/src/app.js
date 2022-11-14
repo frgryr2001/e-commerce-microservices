@@ -11,15 +11,15 @@ const app = express();
 // connect to mongodb
 const connect = require("./database/db");
 
-const productRouter = require('./api/routes/productRoute');
-const categoryRouter = require('./api/routes/categoryRoute');
-const voucherRouter = require('./api/routes/voucherRoute');
+const productRouter = require("./api/routes/productRoute");
+const categoryRouter = require("./api/routes/categoryRoute");
+const voucherRouter = require("./api/routes/voucherRoute");
 
 connect();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: "http://localhost:3006",
+    origin: "http://localhost:3007",
     credentials: true,
   })
 );
@@ -40,9 +40,9 @@ app.use(
   })
 );
 
-app.use('/api/products', productRouter);
-app.use('/api/category', categoryRouter);
-app.use('/api/voucher', voucherRouter);
+app.use("/api/products", productRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/voucher", voucherRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

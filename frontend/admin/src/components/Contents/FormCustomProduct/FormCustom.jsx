@@ -104,6 +104,30 @@ const FormCustom = ({ form, onFinish }) => {
           </Form.Item>
         </Col>
       </Row>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            name="color"
+            label="Color"
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn màu!",
+              },
+            ]}
+          >
+            <Select placeholder="Đen">
+              <Option value="black"> Đen </Option>
+              <Option value="pink"> Hồng </Option>
+              <Option value="white"> Trắng </Option>
+              <Option value="yellow"> Vàng </Option>
+              <Option value="orange"> Cam </Option>
+              <Option value="blue"> Xanh dương </Option>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Row>
         <Col span={12}>
@@ -141,7 +165,7 @@ const FormCustom = ({ form, onFinish }) => {
             getValueFromEvent={normFile}
             extra="No file selected"
           >
-            <Upload name="logo" action="/upload.do" listType="picture">
+            <Upload name="logo" action="" listType="picture">
               <Button>
                 <UploadOutlined /> Select file
               </Button>
