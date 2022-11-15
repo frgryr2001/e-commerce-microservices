@@ -4,34 +4,51 @@ import { Button, Table, Modal, Form } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import FormCustom from "../FormCustomProduct/FormCustom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getAllProducts } from "../../../redux/Products/productSlice";
+import Spinner from "../../Layouts/Spinner";
+
 const Products = () => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
+  const [product, setProduct] = useState({}); // product detail
+  console.log("product", product);
+  const products = useSelector(
+    (state) => state.products?.products?.products || []
+  );
+  const isLoading = useSelector(
+    (state) => state.products?.products?.status === "loading"
+  );
 
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      img: "https://i0.wp.com/epthinktank.eu/wp-content/uploads/2021/09/EPRS-Briefing-698028-General-product-safety-regulation-FINAL.png?fit=1000%2C666&ssl=1",
-      name: "John",
-      price: "500",
-      quantity: "10",
-    },
-    {
-      key: "2",
-      img: "https://sites.google.com/site/thietkewebtaihanoi/_/rsrc/1480308136221/kien-thuc-web/tim-kiem-hinh-anh-dep-cho-giao-dien-website/T%C3%ACm%20ki%E1%BA%BFm%20h%C3%ACnh%20%E1%BA%A3nh%20%C4%91%E1%BA%B9p%20cho%20giao%20di%E1%BB%87n%20website-1.jpg",
-      name: "John",
-      price: "200",
-      quantity: "10",
-    },
-  ]);
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+  // add key in products list
+  const dataSource = products.map((product, index) => {
+    // convert price to VND
+    const price = new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(product.price);
+
+    return {
+      ...product,
+      price,
+      key: index,
+    };
+  });
+  // const [dataSource, setDataSource] = useState([]);
+
   const columns = [
     {
-      key: "img",
+      key: "images",
       title: "Hình ảnh",
-      dataIndex: "img",
-      render: (img) => <img width={100} src={img} alt="img" />,
+      dataIndex: "images",
+      render: (img) => <img width={100} src={img[0].image_url} alt="img" />,
     },
     {
       key: "name",
@@ -44,9 +61,9 @@ const Products = () => {
       dataIndex: "price",
     },
     {
-      key: "quantity",
-      title: "Số lượng",
-      dataIndex: "quantity",
+      key: "manufacture",
+      title: "Nhà sản xuất",
+      dataIndex: "manufacture",
     },
     {
       key: "5",
@@ -83,13 +100,14 @@ const Products = () => {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        setDataSource((pre) => {
-          return pre.filter((student) => student.id !== record.id);
-        });
+        // setDataSource((pre) => {
+        //   return pre.filter((student) => student.id !== record.id);
+        // });
       },
     });
   };
   const onEditProduct = (record) => {
+    setProduct({ ...record });
     setIsEditing(true);
   };
   const resetEditing = () => {
@@ -98,15 +116,19 @@ const Products = () => {
 
   return (
     <div className="ml-[180px] p-10">
-      <Button onClick={showModal}>Add Product</Button>
+      <Button onClick={showModal} className="mb-2">
+        Add Product
+      </Button>
       <ModalWithForm visible={visible} setVisible={setVisible} />
-      <Table columns={columns} dataSource={dataSource} />
+      {!isLoading && <Table columns={columns} dataSource={dataSource} />}
+      {isLoading && <Spinner />}
       <Modal
         title="Edit Student"
         visible={isEditing}
         width={"70%"}
         okText="Save"
         onCancel={() => {
+          setProduct({});
           resetEditing();
         }}
         onOk={() => {
@@ -114,7 +136,7 @@ const Products = () => {
           // resetEditing();
         }}
       >
-        <FormCustom form={form} onFinish={onFinish} />
+        <FormCustom form={form} onFinish={onFinish} product={product} />
       </Modal>
     </div>
   );

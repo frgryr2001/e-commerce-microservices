@@ -6,14 +6,9 @@ export const createProduct = createAsyncThunk(
   "product/createProduct",
   async ({ product, form, toast }, { rejectWithValue }) => {
     try {
-      const product_options = [
-        {
-          size: "32",
-          color: "red",
-          quantity: 10,
-        },
-      ];
-      console.log("DI 21", product);
+      const product_options = product.product_options;
+      console.log("test", product);
+
       const formData = new FormData();
       for (let i = 0; i < product.images.length; i++) {
         formData.append("images", product.images[i].originFileObj);
@@ -52,6 +47,20 @@ export const createProduct = createAsyncThunk(
     }
   }
 );
+
+// get all products
+export const getAllProducts = createAsyncThunk(
+  "product/getAllProducts",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get("http://localhost:3002/api/products");
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 const initialState = {
   products: [],
   status: null,
@@ -67,10 +76,24 @@ const productSlice = createSlice({
       state.status = "loading";
     },
     [createProduct.fulfilled]: (state, action) => {
+      console.log("213123", action.payload);
+      console.log("2131222223", state);
+
       state.status = "success";
-      state.products.push(action.payload);
+      // state.products = [...state.products, action.payload.product];
     },
     [createProduct.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    },
+    [getAllProducts.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [getAllProducts.fulfilled]: (state, action) => {
+      state.status = "success";
+      state.products = action.payload;
+    },
+    [getAllProducts.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
     },

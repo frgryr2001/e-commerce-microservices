@@ -92,9 +92,7 @@ class ProductController {
             color: product_options[i].color,
           });
           await arr_product_options.push(productOption);
-
         }
-        console.log("Request Files", req.files);
         for (let i = 0; i < req.files.length; i++) {
           let formData = new FormData();
           formData.append("image", req.files[i].buffer.toString("base64"));
@@ -104,7 +102,6 @@ class ProductController {
               formData
             )
             .then(async (response) => {
-              console.log("Images Res", response.data);
               const productImage = await new ProductImage({
                 product_id: product._id,
                 image_name: response.data.data.image.filename,

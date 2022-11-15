@@ -15,7 +15,6 @@ const ProductView = (props) => {
   const dispatch = useDispatch();
 
   let product = props.product;
-  console.log(product);
 
   if (product === undefined)
     product = {
@@ -151,15 +150,15 @@ const ProductView = (props) => {
         <div className="product__info__item">
           <div className="product__info__item__title">Màu sắc</div>
           <div className="product__info__item__list">
-            {product.colors?.map((item, index) => (
+            {product.product_options?.map((item, index) => (
               <div
                 key={index}
                 className={`product__info__item__list__item ${
-                  color === item ? "active" : ""
+                  color === item.color ? "active" : ""
                 }`}
-                onClick={() => setColor(item)}
+                onClick={() => setColor(item.color)}
               >
-                <div className={`circle bg-${item}`}></div>
+                <div className={`circle bg-${item.color}`}></div>
               </div>
             ))}
           </div>
@@ -167,19 +166,27 @@ const ProductView = (props) => {
         <div className="product__info__item">
           <div className="product__info__item__title">Kích cỡ</div>
           <div className="product__info__item__list">
-            {product.product_options?.map((item, index) => (
-              <div
-                key={index}
-                className={`product__info__item__list__item ${
-                  size === item.size ? "active" : ""
-                }`}
-                onClick={() => setSize(item.size)}
-              >
-                <span className="product__info__item__list__item__size">
-                  {item.size}
-                </span>
-              </div>
-            ))}
+            {product.product_options
+              ?.filter((item, index, arr) => {
+                return (
+                  arr.findIndex((t) => {
+                    return t.size === item.size;
+                  }) === index
+                );
+              })
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className={`product__info__item__list__item ${
+                    size === item.size ? "active" : ""
+                  }`}
+                  onClick={() => setSize(item.size)}
+                >
+                  <span className="product__info__item__list__item__size">
+                    {item.size}
+                  </span>
+                </div>
+              ))}
           </div>
         </div>
         <div className="product__info__item">

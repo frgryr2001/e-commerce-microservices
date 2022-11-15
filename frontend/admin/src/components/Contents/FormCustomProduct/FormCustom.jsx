@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import React from "react";
 
 import {
@@ -12,7 +12,8 @@ import {
   Modal,
 } from "antd";
 import { Row, Col } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 // textArea
 
 const { TextArea } = Input;
@@ -37,7 +38,39 @@ const normFile = (e) => {
   return e && e.fileList;
 };
 
-const FormCustom = ({ form, onFinish }) => {
+const FormCustom = ({
+  form,
+  onFinish,
+  optionsProduct,
+  setOptionsProduct,
+  product,
+}) => {
+  const sizeText = useRef();
+  const [color, setColor] = useState("");
+  const quantityText = useRef();
+  const categories = useSelector(
+    (state) => state.categories?.categoryName?.categories || []
+  );
+
+  const handleChange = useCallback((value) => {
+    setColor(value);
+  }, []);
+
+  const createOptionProduct = () => {
+    console.log(color);
+
+    if (color && sizeText.current && quantityText.current) {
+      const option = {
+        color,
+        size: sizeText.current.input.value,
+        quantity: quantityText.current.value,
+      };
+
+      setOptionsProduct([...optionsProduct, option]);
+    } else {
+      alert("Vui lòng nhập đầy đủ thông tin kích cỡ và số lượng , màu");
+    }
+  };
   return (
     <Form
       form={form}
@@ -45,6 +78,32 @@ const FormCustom = ({ form, onFinish }) => {
       {...formItemLayout}
       onFinish={onFinish}
       hideRequiredMark
+      fields={[
+        {
+          name: ["name"],
+          value: product?.name,
+        },
+        {
+          name: ["price"],
+          value: product?.price,
+        },
+        {
+          name: ["description"],
+          value: product?.description,
+        },
+        {
+          name: ["categories"],
+          value: product?.category,
+        },
+        // {
+        //   name: ["images"],
+        //   value: product?.images,
+        // },
+        {
+          name: ["manufacturer"],
+          value: product?.manufacture,
+        },
+      ]}
     >
       <Row>
         <Col span={12}>
@@ -80,9 +139,14 @@ const FormCustom = ({ form, onFinish }) => {
               },
             ]}
           >
-            <Select placeholder="Producer">
-              <Option value="producer"> Producer </Option>
-              <Option value="consumer"> Consumer </Option>
+            <Select placeholder="Danh mục">
+              {categories.map((category) => {
+                return (
+                  <Option key={category._id} value={category.name}>
+                    {category.slug}
+                  </Option>
+                );
+              })}
             </Select>
           </Form.Item>
         </Col>
@@ -99,7 +163,7 @@ const FormCustom = ({ form, onFinish }) => {
         <Col span={12}>
           <Form.Item label="Số lượng">
             <Form.Item name="quantity" noStyle>
-              <InputNumber min={0} />
+              <InputNumber min={0} ref={quantityText} />
             </Form.Item>
           </Form.Item>
         </Col>
@@ -117,7 +181,11 @@ const FormCustom = ({ form, onFinish }) => {
               },
             ]}
           >
-            <Select placeholder="Đen">
+            <Select
+              placeholder="Đen"
+              onChange={handleChange}
+              defaultActiveFirstOption
+            >
               <Option value="black"> Đen </Option>
               <Option value="pink"> Hồng </Option>
               <Option value="white"> Trắng </Option>
@@ -132,7 +200,7 @@ const FormCustom = ({ form, onFinish }) => {
       <Row>
         <Col span={12}>
           <Form.Item name={["sizes"]} label="Kích cỡ">
-            <Input />
+            <Input ref={sizeText} />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -150,8 +218,46 @@ const FormCustom = ({ form, onFinish }) => {
             <Select placeholder="Adidas">
               <Option value="Adidas"> Adidas </Option>
               <Option value="Nike"> Nike </Option>
+              <Option value="Puma"> Puma </Option>
+              <Option value="Fila"> Fila </Option>
+              <Option value="Converse"> Converse </Option>
             </Select>
           </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <Button
+            type="primary"
+            style={{ float: "right", marginRight: "40px" }}
+            onClick={createOptionProduct}
+          >
+            Tạo
+          </Button>
+          {/* ui li */}
+          <ul style={{ marginLeft: "130px" }}>
+            {optionsProduct?.map((option, index) => {
+              return (
+                <li key={index} className="flex items-center gap-5">
+                  <span>
+                    Màu : {option.color} - Kích cỡ: {option.size} - Số lượng:{" "}
+                    {option.quantity}
+                  </span>
+
+                  <DeleteOutlined
+                    style={{ color: "red" }}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      const newOptions = optionsProduct.filter(
+                        (item, idx) => idx !== index
+                      );
+                      setOptionsProduct(newOptions);
+                    }}
+                  />
+                </li>
+              );
+            })}
+          </ul>
         </Col>
       </Row>
 

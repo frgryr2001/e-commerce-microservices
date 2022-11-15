@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./components/Auths/Login";
 
 import Spinner from "./components/Layouts/Spinner";
@@ -10,6 +15,7 @@ import Promotion from "./components/Contents/Promotion/Promotion";
 import Dashboard from "./components/Contents/Dashboard";
 import Products from "./components/Contents/Product/Products";
 import { ToastContainer } from "react-toastify";
+
 function App() {
   return (
     <>
@@ -18,7 +24,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
-
           <Route path="/customers" element={<Customers />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/promotions" element={<Promotion />} />
