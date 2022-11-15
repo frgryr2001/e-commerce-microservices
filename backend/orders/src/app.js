@@ -10,7 +10,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 // connect to mongodb
 const connect = require("./database/db");
+const connectRabbitMQ = require("./database/rabbitmq");
+
 connect();
+connectRabbitMQ();
+
 app.set("trust proxy", 1);
 app.use(
 	cors({
