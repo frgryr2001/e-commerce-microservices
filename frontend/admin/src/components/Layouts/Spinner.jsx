@@ -1,9 +1,9 @@
 import classes from "./Spinner.module.css";
 function Spinner() {
   const list_bars = {
-    "list-style": "none",
+    listStyle: "none",
     display: "flex",
-    "align-items": "center",
+    alignItems: "center",
   };
   return (
     <div className={classes.section_loading}>
