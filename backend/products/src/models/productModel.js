@@ -26,11 +26,13 @@ const productSchema = new Schema(
 			type: [ProductImage.schema],
 			default: [],
 		},
-		id_category: {
-			type: String,
+		category_id: {
+			type: Schema.Types.ObjectId,
+			required: true,
 		},
 		category: {
 			type: String,
+			required: true,
 		},
 		manufacture: {
 			type: String,
@@ -57,7 +59,8 @@ const productSchema = new Schema(
 );
 
 productSchema.pre('save', async function (next) {
-	this.slug = removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`;
+	this.slug =
+		removeVietnameseTones(this.name) + `-${Math.floor(Date.now() + Math.random())}`;
 	next();
 });
 
