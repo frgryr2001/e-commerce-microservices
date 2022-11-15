@@ -92,7 +92,7 @@ class ProductController {
             color: product_options[i].color,
           });
           await arr_product_options.push(productOption);
-          console.log(arr_product_options);
+
         }
         console.log("Request Files", req.files);
         for (let i = 0; i < req.files.length; i++) {
@@ -123,7 +123,6 @@ class ProductController {
             });
         }
         console.log("2" + images);
-        console.log("3" + arr_product_options);
         product.images = await images;
         product.product_options = await arr_product_options;
         await ProductOption.insertMany(arr_product_options);
@@ -191,7 +190,6 @@ class ProductController {
             color: product_options[i].color,
           });
           await arr_product_options.push(productOption);
-          console.log(arr_product_options);
         }
         for (let i = 0; i < req.files.length; i++) {
           let formData = new FormData();

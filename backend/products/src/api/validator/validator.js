@@ -76,6 +76,10 @@ exports.productValidator = [
     if (!req.files) {
       throw new Error("Vui lòng thêm ảnh");
     } else {
+      if (!req.files[0]) {
+        throw new Error("Vui lòng thêm ảnh");
+      }
+      console.log(req.files);
       const filetypes = /jpeg|jpg|png|gif/;
       req.files.forEach((file) => {
         if (!filetypes.test(file.mimetype)) {
