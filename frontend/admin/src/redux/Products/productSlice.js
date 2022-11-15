@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const createProduct = createAsyncThunk(
   "product/createProduct",
-  async (product, { rejectWithValue }) => {
+  async ({ product, form, toast }, { rejectWithValue }) => {
     try {
       const product_options = [
         {
@@ -13,8 +13,11 @@ export const createProduct = createAsyncThunk(
           quantity: 10,
         },
       ];
+      console.log("DI 21", product);
       const formData = new FormData();
-      formData.append("images", product.images);
+      for (let i = 0; i < product.images.length; i++) {
+        formData.append("images", product.images[i].originFileObj);
+      }
       formData.append("price", product.price);
       formData.append("name", product.name);
       formData.append("category_id", product.category);
@@ -31,7 +34,6 @@ export const createProduct = createAsyncThunk(
           product_options[i].color
         );
       }
-      console.log(formData);
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -42,6 +44,8 @@ export const createProduct = createAsyncThunk(
         formData,
         config
       );
+      toast.success("Thêm sản phẩm thành công");
+      form.resetFields();
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

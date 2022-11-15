@@ -165,7 +165,7 @@ const FormCustom = ({ form, onFinish }) => {
             getValueFromEvent={normFile}
             extra="No file selected"
           >
-            <Upload name="logo" action="" listType="picture">
+            <Upload name="logo" listType="picture">
               <Button>
                 <UploadOutlined /> Select file
               </Button>
