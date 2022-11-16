@@ -12,9 +12,9 @@ import numberWithCommas from "../utils/numberWithCommas";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cartItems.value);
-
+  const productList = useSelector((state) => state.products?.products || []);
   const [cartProducts, setCartProducts] = useState(
-    productData.getCartItemsInfo(cartItems)
+    productData.getCartItemsInfo(cartItems, productList)
   );
 
   const [totalProducts, setTotalProducts] = useState(0);
@@ -22,7 +22,7 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    setCartProducts(productData.getCartItemsInfo(cartItems));
+    setCartProducts(productData.getCartItemsInfo(cartItems, productList));
     setTotalPrice(
       cartItems.reduce(
         (total, item) => total + Number(item.quantity) * Number(item.price),

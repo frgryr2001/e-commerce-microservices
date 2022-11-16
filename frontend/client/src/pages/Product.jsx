@@ -10,9 +10,7 @@ import productData from "../utils/products";
 import { useSelector } from "react-redux";
 
 const Product = (props) => {
-  const products = useSelector(
-    (state) => state.products?.products?.products || []
-  );
+  const products = useSelector((state) => state.products?.products || []);
 
   const product = productData.getProductBySlug(
     props.match.params.slug,

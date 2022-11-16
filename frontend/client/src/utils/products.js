@@ -10,11 +10,12 @@ const getProducts = (count, products = []) => {
 const getProductBySlug = (slug, products = []) =>
   products.find((e) => e.slug === slug);
 
-const getCartItemsInfo = (cartItems) => {
+const getCartItemsInfo = (cartItems, products = []) => {
   let res = [];
   if (cartItems.length > 0) {
     cartItems.forEach((e) => {
-      let product = getProductBySlug(e.slug);
+      let product = getProductBySlug(e.slug, products);
+      console.log(product);
       res.push({
         ...e,
         product: product,
