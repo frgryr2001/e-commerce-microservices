@@ -11,9 +11,7 @@ import productData from "../utils/products";
 import { useSelector } from "react-redux";
 
 const Home = () => {
-  const products = useSelector(
-    (state) => state.products?.products?.products || []
-  );
+  const products = useSelector((state) => state.products?.products || []);
 
   return (
     <Helmet title="Trang chủ">

@@ -31,7 +31,7 @@ const productSlice = createSlice({
     },
     [fetchProducts.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      state.products = action.payload;
+      state.products = action.payload.products;
     },
     [fetchProducts.rejected]: (state, action) => {
       state.status = "failed";
