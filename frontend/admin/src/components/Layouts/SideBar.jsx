@@ -9,6 +9,7 @@ import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { AiFillEdit } from "react-icons/ai";
 import { FaSalesforce } from "react-icons/fa";
 import { FaProductHunt } from "react-icons/fa";
+import { MdOutlineCategory } from "react-icons/md";
 const SideBar = () => {
   let navigate = useNavigate();
 
@@ -67,6 +68,16 @@ const SideBar = () => {
               >
                 <FaProductHunt size={20} />
                 <span className="nav_name">Sản phẩm</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={"/category"}
+                className="nav_link"
+                onClick={handleClickActive}
+              >
+                <MdOutlineCategory size={20} />
+                <span className="nav_name">Danh mục</span>
               </Link>
             </li>
 

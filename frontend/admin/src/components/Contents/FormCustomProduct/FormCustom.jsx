@@ -50,7 +50,7 @@ const FormCustom = ({
 
   const quantityText = useRef();
   const categories = useSelector(
-    (state) => state.categories?.categoryName?.categories || []
+    (state) => state.categories?.categoryName || []
   );
 
   useEffect(() => {

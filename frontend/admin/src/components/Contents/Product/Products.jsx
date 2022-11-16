@@ -114,6 +114,8 @@ const Products = () => {
 
   return (
     <div className="ml-[180px] p-10">
+      <h1 className="text-[35px] font-bold text-gray-700 ">Quản lý sản phẩm</h1>
+
       <Button onClick={showModal} className="mb-2">
         Add Product
       </Button>
