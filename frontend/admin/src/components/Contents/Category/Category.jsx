@@ -6,16 +6,18 @@ import {
   createCategory,
   getAllCategories,
 } from "../../../redux/Category/categorySlice";
+import Spinner from "../../Layouts/Spinner";
 import { toast } from "react-toastify";
 const Category = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-
+  const isLoading = useSelector(
+    (state) => state.categories?.status === "loading"
+  );
   const categories = useSelector(
     (state) => state.categories?.categoryName || []
   );
   const onFinish = (values) => {
-    console.log("Success:", values);
     const { categoryName } = values;
     dispatch(createCategory({ categoryName, form, toast }));
   };
@@ -59,7 +61,8 @@ const Category = () => {
         </Form.Item>
       </Form>
 
-      <ListCategory categories={categories} />
+      {!isLoading && <ListCategory categories={categories} />}
+      {isLoading && <Spinner />}
     </div>
   );
 };
