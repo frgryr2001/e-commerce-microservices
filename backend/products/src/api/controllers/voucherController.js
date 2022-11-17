@@ -57,12 +57,13 @@ class VoucherController {
 				.status(400)
 				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
-			const { name, code, discount, expiredDate } = req.body;
+			const { name, code, discount, expiredDate, amount } = req.body;
 			try {
 				const voucher = new Voucher({
 					name,
 					code,
 					discount,
+					amount,
 					expiredDate,
 				});
 				await voucher.save();

@@ -9,4 +9,8 @@ router.post("/refresh-token", userController.refreshToken);
 router.post("/forgotPassword", userController.forgotPassword);
 router.patch("/resetPassword/:token", userController.resetPassword);
 router.get("/logout", isAuthenticated, userController.logout);
+
+router.get("/test", isAuthenticated, (req, res) => {
+	  res.send(req.user);
+});
 module.exports = router;

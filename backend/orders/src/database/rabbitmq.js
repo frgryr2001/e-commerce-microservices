@@ -1,11 +1,11 @@
 require('dotenv').config();
 const amqp = require('amqplib');
 
-const RABBITMQ_AMQP_PORT = process.env.RABBITMQ_AMQP_PORT || 5672;
+const RABBITMQ_AMQP_URL = process.env.RABBITMQ_AMQP_URL ;
 async function connectRabbitMQ() {
 	// Note:- Need to connect rabbitMQ Server, to access the Channel
 	try {
-		const amqpServer = `amqp://localhost:${RABBITMQ_AMQP_PORT}`;
+		const amqpServer = `${RABBITMQ_AMQP_URL}`;
 		connection = await amqp.connect(amqpServer);
 		channel = await connection.createChannel();
 		await channel.assertQueue('PRODUCT');
@@ -15,5 +15,4 @@ async function connectRabbitMQ() {
 	}
 }
 
-
-module.exports = connectRabbitMQ; 
+module.exports = connectRabbitMQ;
