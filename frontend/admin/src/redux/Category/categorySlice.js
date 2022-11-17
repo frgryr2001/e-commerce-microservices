@@ -6,7 +6,9 @@ export const getAllCategories = createAsyncThunk(
   "category/getAllCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:3002/api/category");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_PRODUCT_URL}/category`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -19,9 +21,12 @@ export const createCategory = createAsyncThunk(
   "category/createCategory",
   async ({ categoryName, form, toast }, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:3002/api/category", {
-        name: categoryName,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_PRODUCT_URL}/category`,
+        {
+          name: categoryName,
+        }
+      );
       form.resetFields();
       toast.success("Tạo danh mục sản phẩm thành công");
       return response.data;
@@ -36,7 +41,7 @@ export const updateCategory = createAsyncThunk(
   async ({ categoryName, toast, id }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:3002/api/category/${id}`,
+        `${process.env.REACT_APP_API_PRODUCT_URL}/category/${id}`,
         {
           name: categoryName,
         }
@@ -56,7 +61,7 @@ export const deleteCategory = createAsyncThunk(
   async ({ id, toast }, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3002/api/category/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/category/${id}`
       );
       toast.success("Xóa danh mục sản phẩm thành công");
       return response.data;

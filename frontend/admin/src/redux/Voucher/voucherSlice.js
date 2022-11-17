@@ -7,7 +7,7 @@ export const createVoucher = createAsyncThunk(
   async ({ data, form, toast }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3002/api/voucher",
+        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher`,
         data
       );
       toast.success("Tạo voucher thành công");
@@ -24,7 +24,9 @@ export const getAllVouchers = createAsyncThunk(
   "voucher/getAllVouchers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:3002/api/voucher");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher`
+      );
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data.message);
@@ -40,7 +42,7 @@ export const updateVoucher = createAsyncThunk(
     console.log(id);
     try {
       const response = await axios.put(
-        `http://localhost:3002/api/voucher/${id}`,
+        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher/${id}`,
         data
       );
       console.log(response.data);
@@ -60,7 +62,7 @@ export const deleteVoucher = createAsyncThunk(
   async ({ id, toast }, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3002/api/voucher/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher/${id}`
       );
       toast.success("Xóa voucher thành công");
       return response.data;
