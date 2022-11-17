@@ -10,7 +10,7 @@ import { remove } from "../redux/product-modal/productModalSlice";
 
 import Button from "./Button";
 import numberWithCommas from "../utils/numberWithCommas";
-
+import { toast } from "react-toastify";
 const ProductView = (props) => {
   const dispatch = useDispatch();
 
@@ -55,12 +55,12 @@ const ProductView = (props) => {
 
   const check = () => {
     if (color === undefined) {
-      alert("Vui lòng chọn màu sắc!");
+      toast.error("Vui lòng chọn màu sắc");
       return false;
     }
 
     if (size === undefined) {
-      alert("Vui lòng chọn kích cỡ!");
+      toast.error("Vui lòng chọn kích cỡ");
       return false;
     }
 
@@ -77,9 +77,9 @@ const ProductView = (props) => {
         quantity: quantity,
       };
       if (dispatch(addItem(newItem))) {
-        alert("Success");
+        toast.success("Thêm vào giỏ hàng thành công!");
       } else {
-        alert("Fail");
+        toast.error("Thêm vào giỏ hàng thất bại!");
       }
     }
   };

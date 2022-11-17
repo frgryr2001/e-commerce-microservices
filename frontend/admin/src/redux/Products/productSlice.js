@@ -16,7 +16,7 @@ export const createProduct = createAsyncThunk(
       formData.append("price", product.price);
       formData.append("name", product.name);
       formData.append("category_id", product.category);
-      formData.append("manufacture", product.manufacturer);
+      formData.append("manufacture", product.manufacture);
       formData.append("description", product.description);
       for (let i = 0; i < product_options.length; i++) {
         formData.append(`product_options[${i}][size]`, product_options[i].size);
@@ -61,6 +61,22 @@ export const getAllProducts = createAsyncThunk(
   }
 );
 
+// delete product
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async ({ id, toast }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `http://localhost:3002/api/products/${id}`
+      );
+      toast.success("Xóa sản phẩm thành công");
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 const initialState = {
   products: [],
   status: null,
@@ -76,11 +92,8 @@ const productSlice = createSlice({
       state.status = "loading";
     },
     [createProduct.fulfilled]: (state, action) => {
-      console.log("213123", action.payload);
-      console.log("2131222223", state);
-
       state.status = "success";
-      // state.products = [...state.products, action.payload.product];
+      state.products = [...state.products, action.payload.product];
     },
     [createProduct.rejected]: (state, action) => {
       state.status = "failed";
@@ -91,9 +104,22 @@ const productSlice = createSlice({
     },
     [getAllProducts.fulfilled]: (state, action) => {
       state.status = "success";
-      state.products = action.payload;
+      state.products = action.payload.products;
     },
     [getAllProducts.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    },
+    [deleteProduct.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteProduct.fulfilled]: (state, action) => {
+      state.status = "success";
+      state.products = state.products.filter(
+        (product) => product._id !== action.payload.id
+      );
+    },
+    [deleteProduct.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
     },

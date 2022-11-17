@@ -15,7 +15,7 @@ const IMGBB_EXPIRATION = process.env.IMGBB_EXPIRATION || 15552000;
 class ProductController {
   async getAllProducts(req, res) {
     try {
-      const products = await Product.find();
+      const products = await Product.find().populate("category_id");
       res.status(200).json({ status: "Thành công", products: products });
     } catch (err) {
       console.error(err.message);
@@ -265,6 +265,7 @@ class ProductController {
       }
       await product.remove();
       return await res.status(200).json({
+        id: req.params.id,
         status: "Thành công",
         message: "Xóa sản phẩm thành công",
       });

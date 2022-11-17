@@ -115,3 +115,45 @@ img {
   justify-content: center;
   align-items: center;
 }
+
+.section_loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+
+.list_item {
+  margin: 0 7px;
+  width: 8px;
+  border-radius: 10px;
+  background-color: #4274ca;
+  animation: animate 0.8s infinite alternate;
+}
+.list_item:nth-child(odd) {
+  height: 80px;
+  animation-delay: 0.6s;
+}
+.list_item:nth-child(even) {
+  height: 20px;
+}
+
+@keyframes animate {
+  from {
+    height: 5px;
+  }
+  to {
+    height: 70px;
+  }
+}
+.list_bars {
+  list-style: none;
+  display: flex;
+  align-items: center;
+}

@@ -15,6 +15,7 @@ import Promotion from "./components/Contents/Promotion/Promotion";
 import Dashboard from "./components/Contents/Dashboard";
 import Products from "./components/Contents/Product/Products";
 import { ToastContainer } from "react-toastify";
+import Category from "./components/Contents/Category/Category";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/promotions" element={<Promotion />} />
+          <Route path="/category" element={<Category />} />
           <Route path="/products" element={<Products />} />
         </Routes>
         <ToastContainer />

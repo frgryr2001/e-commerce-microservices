@@ -10,32 +10,38 @@ import ProductViewModal from "./ProductViewModal";
 import Routes from "../routes/Routes";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../redux/products/productSlice";
+import Spinner from "./Spinner";
+import { fetchCategories } from "../redux/Categories/CategorySlice";
 
 const Layout = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.products.status);
   useMemo(() => {
     dispatch(fetchProducts());
+    dispatch(fetchCategories());
   }, [dispatch]);
   return (
     <BrowserRouter>
-      {isLoading === "loading" && <div className="loading">Loading&#8230;</div>}
-      {isLoading === "succeeded" && (
-        <Route
-          render={(props) => (
-            <div>
-              <Header {...props} />
-              <div className="container">
-                <div className="main">
-                  <Routes />
+      <Route
+        render={(props) => (
+          <div>
+            <Header {...props} />
+            {isLoading === "loading" && <Spinner />}
+            {isLoading === "succeeded" && (
+              <>
+                <div className="container">
+                  <div className="main">
+                    <Routes />
+                  </div>
                 </div>
-              </div>
-              <Footer />
-              <ProductViewModal />
-            </div>
-          )}
-        />
-      )}
+                <Footer />
+              </>
+            )}
+            <ProductViewModal />
+          </div>
+        )}
+      />
+
       <ToastContainer />
     </BrowserRouter>
   );

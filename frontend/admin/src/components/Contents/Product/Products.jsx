@@ -6,19 +6,19 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import FormCustom from "../FormCustomProduct/FormCustom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getAllProducts } from "../../../redux/Products/productSlice";
+import {
+  deleteProduct,
+  getAllProducts,
+} from "../../../redux/Products/productSlice";
 import Spinner from "../../Layouts/Spinner";
-
+import { toast } from "react-toastify";
 const Products = () => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
   const [product, setProduct] = useState({}); // product detail
-  console.log("product", product);
-  const products = useSelector(
-    (state) => state.products?.products?.products || []
-  );
+  const products = useSelector((state) => state.products?.products || []);
   const isLoading = useSelector(
-    (state) => state.products?.products?.status === "loading"
+    (state) => state.products?.status === "loading"
   );
 
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ const Products = () => {
             />
             <DeleteOutlined
               onClick={() => {
-                onDeleteStudent(record);
+                onDeleteProduct(record);
               }}
               style={{ color: "red", marginLeft: 12 }}
             />
@@ -94,15 +94,13 @@ const Products = () => {
     console.log(values);
   };
 
-  const onDeleteStudent = (record) => {
+  const onDeleteProduct = (record) => {
     Modal.confirm({
       title: "Bạn có chắc chắn muốn xóa sản phẩm này không?",
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        // setDataSource((pre) => {
-        //   return pre.filter((student) => student.id !== record.id);
-        // });
+        dispatch(deleteProduct({ id: record._id, toast }));
       },
     });
   };
@@ -116,6 +114,8 @@ const Products = () => {
 
   return (
     <div className="ml-[180px] p-10">
+      <h1 className="text-[35px] font-bold text-gray-700 ">Quản lý sản phẩm</h1>
+
       <Button onClick={showModal} className="mb-2">
         Add Product
       </Button>

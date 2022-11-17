@@ -4,11 +4,12 @@ import Helmet from "../components/Helmet";
 import CheckBox from "../components/CheckBox";
 
 import productData from "../utils/products";
-import category from "../assets/fake-data/category";
+// import category from "../assets/fake-data/category";
 import colors from "../assets/fake-data/product-color";
 import size from "../assets/fake-data/product-size";
 import Button from "../components/Button";
 import InfinityList from "../components/InfinityList";
+import { useSelector } from "react-redux";
 
 const Catalog = () => {
   const initFilter = {
@@ -16,8 +17,8 @@ const Catalog = () => {
     color: [],
     size: [],
   };
-
-  const productList = productData.getAllProducts();
+  const productList = useSelector((state) => state.products?.products || []);
+  const category = useSelector((state) => state.categories?.categories || []);
 
   const [products, setProducts] = useState(productList);
 
@@ -67,20 +68,25 @@ const Catalog = () => {
     let temp = productList;
 
     if (filter.category.length > 0) {
-      temp = temp.filter((e) => filter.category.includes(e.categorySlug));
+      temp = temp.filter((e) => filter.category.includes(e.category_id.slug));
     }
 
     if (filter.color.length > 0) {
-      temp = temp.filter((e) => {
-        const check = e.colors.find((color) => filter.color.includes(color));
-        return check !== undefined;
+      temp = temp.filter((e, index) => {
+        // filter color in product_options
+        const color = e.product_options.filter((e) =>
+          filter.color.includes(e.color)
+        );
+        return color.length > 0;
       });
     }
 
     if (filter.size.length > 0) {
       temp = temp.filter((e) => {
-        const check = e.size.find((size) => filter.size.includes(size));
-        return check !== undefined;
+        const size = e.product_options.filter((e) =>
+          filter.size.includes(e.size)
+        );
+        return size.length > 0;
       });
     }
 
@@ -110,20 +116,26 @@ const Catalog = () => {
               danh mục sản phẩm
             </div>
             <div className="catalog__filter__widget__content">
-              {category.map((item, index) => (
-                <div
-                  key={index}
-                  className="catalog__filter__widget__content__item"
-                >
-                  <CheckBox
-                    label={item.display}
-                    onChange={(input) =>
-                      filterSelect("CATEGORY", input.checked, item)
-                    }
-                    checked={filter.category.includes(item.categorySlug)}
-                  />
-                </div>
-              ))}
+              {category.map((item, index) => {
+                const itemNew = {
+                  display: item.name,
+                  categorySlug: item.slug,
+                };
+                return (
+                  <div
+                    key={item._id}
+                    className="catalog__filter__widget__content__item"
+                  >
+                    <CheckBox
+                      label={item.name}
+                      onChange={(input) =>
+                        filterSelect("CATEGORY", input.checked, itemNew)
+                      }
+                      checked={filter.category.includes(item.slug)}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 
