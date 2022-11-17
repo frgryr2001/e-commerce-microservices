@@ -1,7 +1,16 @@
 const Order = require('../../models/orderModel');
 const OrderDetail = require('../../models/orderDetailModel');
 const { validationResult } = require('express-validator');
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
+var connection, channel;
+(async () => {
+	const amqpServer = `${process.env.RABBITMQ_AMQP_URL}`;
+	connection = await amqp.connect(amqpServer);
+	channel = await connection.createChannel();
+	await channel.assertQueue('ORDER_UPDATE_PRODUCT', { durable: false });
+	
+})();
+
 class OrderController {
 	async getAllOrders(req, res) {
 		try {
@@ -57,6 +66,7 @@ class OrderController {
 				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
 			const { voucher_code, cart_detail } = req.body;
+
 			try {
 				const order = new Order({
 					voucher_code,
@@ -80,25 +90,37 @@ class OrderController {
 	}
 
 	async test(req, res) {
-		amqp.connect('amqp://localhost', function (error0, connection) {
-			if (error0) {
-				throw error0;
-			}
-			connection.createChannel(function (error1, channel) {
-				if (error1) {
-					throw error1;
+		/* 		await amqp.connect(
+			`${process.env.RABBITMQ_AMQP_URL}`,
+			function (error0, connection) {
+				if (error0) {
+					throw error0;
 				}
-				var queue = 'hello';
-				var msg = 'Hello world';
-				channel.assertQueue(queue, {
-					durable: false,
-				});
-				channel.sendToQueue('test', Buffer.from(msg));
-				console.log(' [x] Sent %s', msg);
-			});
+				connection.createChannel(async function (error1, channel) {
+					if (error1) {
+						throw error1;
+					} */
+
+		await channel.assertQueue('tested', { durable: false });
+		var queue = 'test';
+		var msg = 'Hello world';
+		await channel.assertQueue(queue, {
+			durable: false,
 		});
-		console.log('ok');
-		res.status(200).json({
+		await channel.sendToQueue(queue, Buffer.from(msg));
+		console.log(' 1.[order] Sent %s', msg);
+		await channel.consume('tested', function (msg) {
+			console.log(' 3.[order] Received %s', msg.content.toString());
+			if(!msg.content){
+				console.log("Không có tin nhắn")
+			}
+		});
+		/* 				});
+			}
+		);	 */
+
+		console.log(' end[ok]');
+		return res.status(200).json({
 			status: 'Thành công',
 			message: 'Đặt hàng thành công đơn hàng của bạn đang được xử lý!',
 		});
