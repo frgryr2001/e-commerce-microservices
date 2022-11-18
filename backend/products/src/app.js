@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3002;
 const connect = require('./database/db');
 // connectRabbitMQ();
 //const connectRabbitMQ = require('./database/rabbitmq');
-
+const start = require('./database/rabbitmq');
 const productRouter = require('./api/routes/productRoute');
 const categoryRouter = require('./api/routes/categoryRoute');
 const voucherRouter = require('./api/routes/voucherRoute');
@@ -61,14 +61,15 @@ app.use(
 app.use('/api/products', productRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/voucher', voucherRouter);
+//start()
 
-async function connectRabbitMQ() {
+/* async function connectRabbitMQ() {
 	// Note:- Need to connect rabbitMQ Server, to access the Channel
 	try {
 		const amqpServer = `${process.env.RABBITMQ_AMQP_URL}`;
 		connection = await amqp.connect(amqpServer);
 		channel = await connection.createChannel();
-		await channel.assertQueue('tested', { durable: false });
+		await channel.assertQueue('test', { durable: false });
 		await channel.assertQueue('PRODUCT_CONFIRM_ORDER', { durable: false });
 		console.log('>>> Connect to rabbitmq successed');
 	} catch (err) {
@@ -77,11 +78,17 @@ async function connectRabbitMQ() {
 }
 
 connectRabbitMQ().then(() => {
-	channel.consume('test', async function (msg) {
-		console.log(' 2.[product] Received %s', msg.content.toString());
-		channel.sendToQueue('tested', Buffer.from('Ok nhận được'));
-	});
-});
+	try {
+		channel.consume('test', async function (msg) {
+			if (!msg) return;
+			console.log(' ');
+			console.log(' 2.[product] Received %s', msg.content.toString());
+			channel.sendToQueue('tested', Buffer.from('Ok nhận được'));
+		});
+	} catch (err) {
+		console.log(err);
+	}
+}); */
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

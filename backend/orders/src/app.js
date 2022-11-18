@@ -40,19 +40,19 @@ app.use(
 	})
 );
 
-
-(async function connectRabbitMQ() {
+/* (async function connectRabbitMQ() {
 	// Note:- Need to connect rabbitMQ Server, to access the Channel
 	try {
 		const amqpServer = `${process.env.RABBITMQ_AMQP_URL}`;
 		connection = await amqp.connect(amqpServer);
 		channel = await connection.createChannel();
-		await channel.assertQueue('test', { durable: false });
+
+		await channel.assertQueue('tested', { durable: false });
 		console.log('>>> Connect to rabbitmq successed');
 	} catch (err) {
 		console.log(err);
 	}
-})();
+})(); */
 app.use('/api/orders', orderRouter);
 
 // catch 404 and forward to error handler

@@ -29,6 +29,18 @@ const orderSchema = new Schema(
 			type: [OrderDetail.schema],
 			required: true,
 		},
+		province_id: {
+			type: Number,
+			required: true,
+		},
+		district_id: {
+			type: Number,
+			required: true,
+		},
+		ward_id: {
+			type: Number,
+			required: true,
+		},
 		address: {
 			type: String,
 			required: true,

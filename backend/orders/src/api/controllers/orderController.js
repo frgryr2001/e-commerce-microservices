@@ -2,14 +2,17 @@ const Order = require('../../models/orderModel');
 const OrderDetail = require('../../models/orderDetailModel');
 const { validationResult } = require('express-validator');
 const amqp = require('amqplib');
-var connection, channel;
+const axios = require('axios');
+const { closeOnErr, work } = require('../../database/rabbitmq');
+/* var connection, channel;
 (async () => {
 	const amqpServer = `${process.env.RABBITMQ_AMQP_URL}`;
 	connection = await amqp.connect(amqpServer);
 	channel = await connection.createChannel();
 	await channel.assertQueue('ORDER_UPDATE_PRODUCT', { durable: false });
+	await channel.assertQueue('tested', { durable: false });
 	
-})();
+})(); */
 
 class OrderController {
 	async getAllOrders(req, res) {
@@ -65,8 +68,8 @@ class OrderController {
 				.status(400)
 				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
-			const { voucher_code, cart_detail } = req.body;
-
+			const { voucher_code, province_id, district_id, ward_id, address, cart_detail } =
+				req.body;
 			try {
 				const order = new Order({
 					voucher_code,
@@ -101,24 +104,47 @@ class OrderController {
 						throw error1;
 					} */
 
-		await channel.assertQueue('tested', { durable: false });
+		const amqpServer = `${process.env.RABBITMQ_AMQP_URL}`;
+		const connection = await amqp.connect(amqpServer);
+		const channel = await connection.createChannel();
 		var queue = 'test';
 		var msg = 'Hello world';
-		await channel.assertQueue(queue, {
-			durable: false,
-		});
+
 		await channel.sendToQueue(queue, Buffer.from(msg));
-		console.log(' 1.[order] Sent %s', msg);
-		await channel.consume('tested', function (msg) {
-			console.log(' 3.[order] Received %s', msg.content.toString());
-			if(!msg.content){
-				console.log("Không có tin nhắn")
+		await console.log(' 1.[order] Sent %s', msg);
+		/* await channel.consume('tested', async function (msg) {
+			await console.log(' 3.[order] Received %s', msg.content.toString());
+			if (!msg.content) {
+				console.log('Không có tin nhắn');
+			}
+		}); */
+		await channel.assertQueue('tested', { durable: false });
+		await channel.consume('tested', async function (msg) {
+			await console.log(' 3.[order] Received %s', msg.content.toString());
+			if (!msg.content) {
+				console.log('Không có tin nhắn');
 			}
 		});
+
+		/* 	channel.consume(
+		'tested',
+		msg => {
+			console.log(' 3.[order] Received %s', msg.content.toString());
+		},
+		{ noAck: false }
+	); */
+		console.log('[order]');
+		/* 		await channel.consume('tested', (msg) =>{
+			console.log(' 3.[order] Received %s', msg.content.toString());
+			if (!msg.content) {
+				console.log('Không có tin nhắn');
+			}
+		},{ noAck: false }); */
 		/* 				});
 			}
 		);	 */
-
+		await channel.close();
+		await connection.close();
 		console.log(' end[ok]');
 		return res.status(200).json({
 			status: 'Thành công',
