@@ -25,7 +25,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const activeNav = mainNav.findIndex((e) => e.path === pathname);
-  console.log("token", token);
+
   const axiosJWT = createAxios(user, token, dispatch, loginSuccess);
   const headerRef = useRef(null);
 

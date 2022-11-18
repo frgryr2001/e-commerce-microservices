@@ -35,7 +35,7 @@ export const createProduct = createAsyncThunk(
         },
       };
       const { data } = await axios.post(
-        "http://localhost:3002/api/products",
+        `${process.env.REACT_APP_API_PRODUCT_URL}/products`,
         formData,
         config
       );
@@ -53,7 +53,9 @@ export const getAllProducts = createAsyncThunk(
   "product/getAllProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get("http://localhost:3002/api/products");
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_PRODUCT_URL}/products`
+      );
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data.message);
@@ -67,7 +69,7 @@ export const deleteProduct = createAsyncThunk(
   async ({ id, toast }, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:3002/api/products/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/products/${id}`
       );
       toast.success("Xóa sản phẩm thành công");
       return data;

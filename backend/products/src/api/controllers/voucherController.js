@@ -25,9 +25,9 @@ class VoucherController {
   // @desc    Get voucher by id
   // @access  Public
 
-  async getVoucherById(req, res) {
+  async getVoucherByCode(req, res) {
     try {
-      const voucher = await Voucher.findById(req.params.id);
+      const voucher = await Voucher.findOne({ code: req.params.code });
       //const voucher = await Voucher.findOne({ code: req.params.id });
       if (!voucher) {
         return res.status(400).json({

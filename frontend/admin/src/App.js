@@ -16,7 +16,6 @@ import Dashboard from "./components/Contents/Dashboard";
 import Products from "./components/Contents/Product/Products";
 import { ToastContainer } from "react-toastify";
 import Category from "./components/Contents/Category/Category";
-
 function App() {
   return (
     <>

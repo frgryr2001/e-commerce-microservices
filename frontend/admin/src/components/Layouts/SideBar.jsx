@@ -10,9 +10,13 @@ import { AiFillEdit } from "react-icons/ai";
 import { FaSalesforce } from "react-icons/fa";
 import { FaProductHunt } from "react-icons/fa";
 import { MdOutlineCategory } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { logout } from "../../redux/Auth/authSlice";
 const SideBar = () => {
-  let navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth?.token);
   const handleClickActive = (e) => {
     // Toggle isActive state on click
     /* == Active attribute == */
@@ -26,9 +30,9 @@ const SideBar = () => {
   };
 
   const onLogout = () => {
-    navigate("/login", { replace: true });
+    dispatch(logout({ token, toast, navigate }));
   };
-  return (
+  return token ? (
     <div className="container" id="navbar">
       <nav className="nav">
         <div>
@@ -110,6 +114,8 @@ const SideBar = () => {
         </span>
       </nav>
     </div>
+  ) : (
+    <></>
   );
 };
 

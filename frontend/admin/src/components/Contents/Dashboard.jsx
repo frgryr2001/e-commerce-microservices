@@ -1,5 +1,8 @@
 import { Line } from "react-chartjs-2";
 import Chart from "chart.js/auto";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 const labels = ["Mon", "Tue", "Thu", "Fri", "Sat", "Sun"];
 
 const data = {
@@ -17,6 +20,16 @@ const data = {
   ],
 };
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth?.token);
+
+  console.log(token);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
   return (
     <div className="ml-[180px] p-10">
       <h1 className="text-[35px] font-bold text-gray-700 mb-0">Dashboard</h1>

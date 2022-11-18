@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Login.module.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Spinner from "../Layouts/Spinner";
-
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../redux/Auth/authSlice";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 let isInitial = true;
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth?.token);
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,10 +34,12 @@ const Login = () => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const userData = {
+    const data = {
       email,
       password,
     };
+
+    dispatch(login({ data, toast, navigate }));
   };
 
   return (
