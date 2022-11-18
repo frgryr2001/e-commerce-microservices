@@ -11,6 +11,7 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import TableHisPayment from "../components/TableHisPayment";
 import ResetPassword from "../pages/ResetPassword";
+import Checkout from "../pages/Checkout";
 
 const Routes = () => {
   return (
@@ -20,6 +21,7 @@ const Routes = () => {
       <Route path="/catalog" component={Catalog} />
       <Route path="/cart" component={Cart} />
       <Route path="/purchase-history" component={TableHisPayment} />
+      <Route path="/checkout" component={Checkout} />
 
       {/* login */}
       <Route path="/login" component={Login} />

@@ -6,12 +6,14 @@ import cartItemsReducer from "./shopping-cart/cartItemsSlide";
 import authReducer from "./authentication/authSlice";
 import productReducer from "./products/productSlice";
 import categoriesReducer from "./Categories/CategorySlice";
+import voucherReducer from "./Voucher/voucherSlice";
 const rootReducer = combineReducers({
   productModal: productModalReducer,
   cartItems: cartItemsReducer,
   user: authReducer,
   products: productReducer,
   categories: categoriesReducer,
+  voucher: voucherReducer,
 });
 
 export default rootReducer;

@@ -15,7 +15,7 @@ export const fetchLogin = createAsyncThunk(
   async ({ data, toast, history }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/v1/api/auth/login",
+        `${process.env.REACT_APP_API_AUTH_URL}/login`,
         data,
         {
           headers: {
@@ -39,7 +39,7 @@ export const fetchRegister = createAsyncThunk(
   async ({ data, toast, form }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/v1/api/auth/register",
+        `${process.env.REACT_APP_API_AUTH_URL}/register`,
         data,
         {
           headers: {
@@ -63,7 +63,7 @@ export const fetchLogout = createAsyncThunk(
   async ({ axiosJWT, token, history }, { rejectWithValue }) => {
     try {
       const response = await axiosJWT.get(
-        "http://localhost:3000/v1/api/auth/logout",
+        `${process.env.REACT_APP_API_AUTH_URL}/logout`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ export const fetchForgotPassword = createAsyncThunk(
   async ({ data, form, toast }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/v1/api/auth/forgotPassword/`,
+        `${process.env.REACT_APP_API_AUTH_URL}/forgotPassword`,
         data,
         {
           headers: {
@@ -110,7 +110,7 @@ export const fetchResetPassword = createAsyncThunk(
   async ({ data, token, toast, history }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(
-        `http://localhost:3000/v1/api/auth/resetPassword/${token}`,
+        `${process.env.REACT_APP_API_AUTH_URL}/resetPassword/${token}`,
         { password: data },
         {
           headers: {

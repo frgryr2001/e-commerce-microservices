@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Helmet from "../components/Helmet";
@@ -9,13 +9,17 @@ import Button from "../components/Button";
 
 import productData from "../utils/products";
 import numberWithCommas from "../utils/numberWithCommas";
+import useDebounce from "../utils/useDebounce";
+import { getVoucherByCode } from "../redux/Voucher/voucherSlice";
 
 const Cart = () => {
+  const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cartItems.value);
   const productList = useSelector((state) => state.products?.products || []);
   const [cartProducts, setCartProducts] = useState(
     productData.getCartItemsInfo(cartItems, productList)
   );
+  const [voucherText, setVoucherText] = useState("");
 
   const [totalProducts, setTotalProducts] = useState(0);
 
@@ -34,10 +38,34 @@ const Cart = () => {
     );
   }, [cartItems]);
 
+  // voucher
+  const voucher = useSelector((state) => state.voucher?.voucher);
+
+  useEffect(() => {
+    dispatch(getVoucherByCode(voucherText));
+  }, [voucherText]);
+  const debounce = useDebounce();
+  const handleInputChange = (e) => {
+    const text = e.target.value;
+    debounce(() => {
+      setVoucherText(text);
+    }, 1000);
+  };
+
   return (
     <Helmet title="Giỏ hàng">
-      <div className="cart">
+      <div className=" cart">
         <div className="cart__info">
+          <div className="cart__info__voucher">
+            <label htmlFor="voucher">Voucher :</label>
+            <input
+              type="text"
+              id="voucher"
+              name="voucher"
+              placeholder="Mã giảm giá"
+              onChange={handleInputChange}
+            />
+          </div>
           <div className="cart__info__txt">
             <p>Bạn đang có {totalProducts} sản phẩm trong giỏ hàng</p>
             <div className="cart__info__txt__price">
@@ -46,7 +74,9 @@ const Cart = () => {
             </div>
           </div>
           <div className="cart__info__btn">
-            <Button size="block">Đặt hàng</Button>
+            <Link to="/checkout" style={{ marginBottom: "20px" }}>
+              <Button size="block">Đặt hàng</Button>
+            </Link>
             <Link to="/catalog">
               <Button size="block">Tiếp tục mua hàng</Button>
             </Link>

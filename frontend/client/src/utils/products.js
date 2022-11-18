@@ -15,7 +15,7 @@ const getCartItemsInfo = (cartItems, products = []) => {
   if (cartItems.length > 0) {
     cartItems.forEach((e) => {
       let product = getProductBySlug(e.slug, products);
-      console.log(product);
+
       res.push({
         ...e,
         product: product,
