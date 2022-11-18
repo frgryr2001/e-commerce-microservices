@@ -70,6 +70,25 @@ class OrderController {
 		} else {
 			const { voucher_code, province_id, district_id, ward_id, address, cart_detail } =
 				req.body;
+			const products_price = cart_detail.reduce((total, product) => {
+				return (total += product.price * item.quantity);
+			}, 0);
+			const quantity = cart_detail.reduce((total, product) => {
+				return (total += product.quantity);
+			}, 0);
+			let voucher_price = 0;
+			if (voucher_code) {
+				data = await axios.get(
+					`${process.env.VOUCHER_URL}/api/voucher/${voucher_code}`,
+					{
+						headers: {
+							'context-type': 'application/json',
+						},
+					}
+				);
+				voucher_price = (products_price * (100 - data.voucher.discount)) / 100;
+			}
+			const total_price = products_price - voucher_price;
 			try {
 				const order = new Order({
 					voucher_code,
@@ -87,6 +106,100 @@ class OrderController {
 				res.status(400).json({
 					status: 'Thất bại',
 					message: 'Có lỗi xảy ra khi đặt hàng, vui lòng thử lại!',
+				});
+			}
+		}
+	}
+
+	async getShippingFee(req, res) {
+		const errors = await validationResult(req);
+		if (!errors.isEmpty()) {
+			return res
+				.status(400)
+				.json({ status: 'Thất bại', message: errors.array()[0].msg });
+		} else {
+			const { province_id, district_id, ward_id, cart_detail, quantity } = req.body;
+			let qty = 0;
+			if (cart_detail) {
+				qty = cart_detail.reduce((total, product) => {
+					return (total += product.quantity);
+				}, 0);
+			}
+			let shipping_fee = 0;
+			try {
+				let service_id = await axios
+					.post(
+						'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services',
+						{
+							from_district: 1449,
+							to_district: district_id,
+							shop_id: Number(process.env.SHOP_ID_GHN),
+						},
+						{
+							headers: {
+								'Content-Type': 'application/json',
+								token: `${process.env.API_TOKEN_GHN}`,
+							},
+						}
+					)
+					.catch(function (error) {
+						if (error.response) {
+							console.log(error.response.data);
+							console.log(error.response.status);
+							console.log(error.response.headers);
+						} else if (error.request) {
+							console.log(error.request);
+						} else {
+							console.log('Error', error.message);
+						}
+						console.log(error.config);
+					});
+				let data = await axios
+					.post(
+						'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+						{
+							from_district_id: 1449,
+							to_district_id: district_id,
+							to_ward_code: ward_id,
+							service_id: service_id.data.data[0].service_id,
+							weight: 220 * quantity,
+							length: 27,
+							width: 20 ,
+							height: 12 * quantity,
+							insurance_value: 0,
+						},
+						{
+							headers: {
+								token: `${process.env.API_TOKEN_GHN}`,
+								'Content-Type': 'application/json',
+								shopid: process.env.SHOP_ID_GHN,
+							},
+						}
+					).catch(function (error) {
+						if (error.response) {
+							console.log(error.response.data);
+							console.log(error.response.status);
+							console.log(error.response.headers);
+						} else if (error.request) {
+							console.log(error.request);
+						} else {
+							console.log('Error', error.message);
+						}
+						console.log(error.config);
+					});
+				await console.log(data.data.data.total);
+				shipping_fee = data.data.data.total;
+				return res.status(200).json({
+					status: 'Thành công',
+					message: 'Tính phí vận chuyển thành công!',
+					shipping_fee: shipping_fee,
+				});
+			} catch (err) {
+				console.error(err.message);
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Có lỗi xảy ra khi tính phí vận chuyển, vui lòng thử lại!',
+					err: err,
 				});
 			}
 		}
