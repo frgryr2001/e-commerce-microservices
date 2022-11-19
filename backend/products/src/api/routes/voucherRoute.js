@@ -18,4 +18,6 @@ router.put("/:id", updateVoucherValidator, voucherController.updateVoucher);
 
 router.delete("/:id", voucherController.deleteVoucher);
 
+router.get("/use/:id", voucherController.useVoucher);
+
 module.exports = router;

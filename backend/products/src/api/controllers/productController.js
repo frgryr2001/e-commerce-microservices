@@ -42,6 +42,17 @@ class ProductController {
     }
   }
 
+  async getProductOptions(req, res) {
+    try {
+      const product_option = await ProductOption.findById(req.params.id);
+      res.status(200).json({ status: "Thành công", product_option: product_option });
+    } catch (err) {
+      console.error(err.message);
+      res
+        .status(400)
+        .json({ status: "Thất bại", message: "Không tìm thấy kiểu sản phẩm" });
+    }
+  }
   //
   // @route   POST api/products
   // @desc    Create a product
@@ -237,6 +248,7 @@ class ProductController {
       }
     }
   }
+
 
   async deleteProduct(req, res) {
     try {

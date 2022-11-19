@@ -14,4 +14,6 @@ router.put('/:id', upload, updateProductValidator, productController.updateProdu
 
 router.delete('/:id', productController.deleteProduct);
 
+router.get('/option/:id', productController.getProductOptions);
+
 module.exports = router;

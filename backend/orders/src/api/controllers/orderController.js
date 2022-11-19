@@ -28,10 +28,65 @@ class OrderController {
 		}
 	}
 
+	async changeStatus(req, res) {
+		try {
+			const { id, status } = req.body;
+			if (!status) {
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Thiếu trường status!',
+				});
+			}
+			const order = await Order.findById(id);
+			if (!order) {
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Không tìm thấy đơn hàng!',
+				});
+			}
+			order.status = status;
+			await order.save();
+			res.status(200).json({
+				status: 'Thành công',
+				message: 'Cập nhật trạng thái đơn hàng thành công!',
+			});
+		} catch (err) {
+			console.error(err.message);
+			res.status(400).json({
+				status: 'Thất bại',
+				message: 'Cập nhật trạng thái đơn hàng thất bại!',
+			});
+		}
+	}
+
+	async deleteOrder(req, res) {
+		try {
+			const order = await Order.findById(req.params.id);
+			if (!order) {
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Không tìm thấy đơn hàng!',
+				});
+			}
+			await order.remove();
+			res.status(200).json({
+				status: 'Thành công',
+				message: 'Xóa đơn hàng thành công!',
+			});
+		} catch (err) {
+			console.error(err.message);
+			res.status(400).json({
+				status: 'Thất bại',
+				message: 'Xóa đơn hàng thất bại!',
+			});
+		}
+	}
+
+
 	//
 	async getOrderByEachUser(req, res) {
 		try {
-			const orders = await Order.find({ user_id: req.user._id });
+			const orders = await Order.find({ user_id: req.user.id });
 			res.status(200).json({ status: 'Thành công ', orders: orders });
 		} catch (err) {
 			console.error(err.message);
@@ -68,35 +123,112 @@ class OrderController {
 				.status(400)
 				.json({ status: 'Thất bại', message: errors.array()[0].msg });
 		} else {
-			const { voucher_code, province_id, district_id, ward_id, address, cart_detail } =
-				req.body;
-			const products_price = cart_detail.reduce((total, product) => {
-				return (total += product.price * item.quantity);
+			let {
+				voucher_code,
+				province_id,
+				district_id,
+				ward_id,
+				address,
+				products,
+				shipping_fee,
+			} = req.body;
+			let products_price = await products.reduce((total, product) => {
+				return (total += product.price * product.quantity);
 			}, 0);
-			const quantity = cart_detail.reduce((total, product) => {
+			let quantity = await products.reduce((total, product) => {
 				return (total += product.quantity);
 			}, 0);
+			let order_detail_lst = [];
 			let voucher_price = 0;
-			if (voucher_code) {
-				data = await axios.get(
-					`${process.env.VOUCHER_URL}/api/voucher/${voucher_code}`,
-					{
-						headers: {
-							'context-type': 'application/json',
-						},
-					}
-				);
-				voucher_price = (products_price * (100 - data.voucher.discount)) / 100;
-			}
-			const total_price = products_price - voucher_price;
+			let total_price = 0;
 			try {
-				const order = new Order({
+				const fee_res = await axios
+					.post(
+						`${process.env.API_ORDER_SERVICE}/api/orders/shipping-fees`,
+						{
+							district_id: district_id,
+							ward_id: ward_id,
+							quantity: quantity,
+						},
+						{
+							headers: {
+								'Content-Type': 'application/json',
+							},
+						}
+					)
+					.catch(function (error) {
+						if (error.response) {
+							console.log(error.response.data);
+							console.log(error.response.status);
+							console.log(error.response.headers);
+						} else if (error.request) {
+							console.log(error.request);
+						} else {
+							console.log('Error', error.message);
+						}
+						console.log(error.config);
+						console.log(error);
+					});
+				shipping_fee = fee_res.data.shipping_fee;
+				if (!fee_res) {
+					return res.status(400).json({
+						status: 'Thất bại',
+						message: 'Khu vực này không hỗ trợ vận chuyển!',
+					});
+				}
+
+				if (voucher_code) {
+					let voucher_data = await axios.get(
+						`${process.env.API_PRODUCT_SERVICE}/api/voucher/${voucher_code}`,
+						{
+							headers: {
+								'context-type': 'application/json',
+							},
+						}
+					);
+					await axios.get(
+						`${process.env.API_PRODUCT_SERVICE}/api/voucher/use/${voucher_code}`
+					);
+					voucher_price =
+						(products_price * (100 - voucher_data.data.voucher.discount)) / 100;
+				}
+
+				total_price = products_price - voucher_price + shipping_fee;
+				const order = await new Order({
+					user_id: req.user.id,
 					voucher_code,
-					user_id: req.user._id,
+					phone: req.user.phone,
+					province_id,
+					district_id,
+					ward_id,
+					address,
 					total_price,
+					status: 0,
 				});
+
+				for (let i = 0; i < products.length; i++) {
+					let order_detail = await new OrderDetail({
+						product_id: products[i].product_id,
+						quantity: products[i].quantity,
+						product_option_id: products[i].product_option_id,
+						price: products[i].price,
+						order_id: order._id,
+						size: products[i].size,
+						color: products[i].color,
+					});
+					await order_detail_lst.push(order_detail);
+					//console.log(order_detail_lst)
+				}
+				console.log('product_price', products_price);
+				console.log('voucher_price', voucher_price);
+				console.log('shipping_fee', shipping_fee);
+				console.log('total_price', total_price);
+
+				order.order_detail = await order_detail_lst;
 				await order.save();
-				res.status(200).json({
+				await OrderDetail.insertMany(order_detail_lst);
+				console.log(order_detail_lst);
+				return res.status(200).json({
 					status: 'Thành công',
 					message: 'Đặt hàng thành công đơn hàng của bạn đang được xử lý!',
 					order: order,
@@ -125,7 +257,7 @@ class OrderController {
 					return (total += product.quantity);
 				}, 0);
 			}
-			let shipping_fee = 0;
+			let shipping_fee = 30000;
 			try {
 				let service_id = await axios
 					.post(
@@ -164,7 +296,7 @@ class OrderController {
 							service_id: service_id.data.data[0].service_id,
 							weight: 220 * quantity,
 							length: 27,
-							width: 20 ,
+							width: 20,
 							height: 12 * quantity,
 							insurance_value: 0,
 						},
@@ -175,7 +307,8 @@ class OrderController {
 								shopid: process.env.SHOP_ID_GHN,
 							},
 						}
-					).catch(function (error) {
+					)
+					.catch(function (error) {
 						if (error.response) {
 							console.log(error.response.data);
 							console.log(error.response.status);
@@ -188,7 +321,9 @@ class OrderController {
 						console.log(error.config);
 					});
 				await console.log(data.data.data.total);
-				shipping_fee = data.data.data.total;
+				if (data.data.data.total) {
+					shipping_fee = data.data.data.total;
+				}
 				return res.status(200).json({
 					status: 'Thành công',
 					message: 'Tính phí vận chuyển thành công!',

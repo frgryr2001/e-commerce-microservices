@@ -14,11 +14,12 @@ const orderSchema = new Schema(
 			required: true,
 		},
 		status: {
-			type: String,
+			type: Number,
 			required: true,
 		},
 		voucher_code: {
-			type: Schema.Types.ObjectId,
+			type: String,
+			default: '',
 		},
 		total_price: {
 			type: Number,
@@ -27,6 +28,7 @@ const orderSchema = new Schema(
 		},
 		order_detail: {
 			type: [OrderDetail.schema],
+			ref: 'OrderDetail',
 			required: true,
 		},
 		province_id: {
