@@ -30,7 +30,7 @@ export const createAxios = (user, token, dispatch, stateSuccess) => {
 
       if (decodedToken.exp < date.getTime() / 1000) {
         const data = await refreshToken();
-        console.log("data AXIOS", data);
+
         const refreshUser = {
           user: data.data,
           token: data.token,
@@ -39,6 +39,7 @@ export const createAxios = (user, token, dispatch, stateSuccess) => {
         dispatch(stateSuccess(refreshUser));
         config.headers["authorization"] = "Bearer " + data.token;
       }
+      // config.headers["authorization"] = "Bearer " + user.token;
 
       return config;
     },

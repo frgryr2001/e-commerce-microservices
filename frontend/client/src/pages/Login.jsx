@@ -27,7 +27,6 @@ const Login = () => {
   return (
     <>
       <Form
-        name="basic"
         labelCol={{
           span: 8,
         }}

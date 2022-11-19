@@ -69,7 +69,15 @@ const ProductView = (props) => {
 
   const addToCart = () => {
     if (check()) {
+      // find id product option by color and size
+      const productOption = product.product_options.find(
+        (option) =>
+          option.color === color && option.size === size && option.quantity > 0
+      );
+
       let newItem = {
+        id: product._id,
+        id_productOption: productOption._id,
         slug: product.slug,
         color: color,
         size: size,
@@ -86,7 +94,15 @@ const ProductView = (props) => {
 
   const goToCart = () => {
     if (check()) {
+      // find id product option by color and size
+      const productOption = product.product_options.find(
+        (option) =>
+          option.color === color && option.size === size && option.quantity > 0
+      );
+
       let newItem = {
+        id: product._id,
+        id_productOption: productOption._id,
         slug: product.slug,
         color: color,
         size: size,
@@ -150,7 +166,7 @@ const ProductView = (props) => {
         <div className="product__info__item">
           <div className="product__info__item__title">Màu sắc</div>
           <div className="product__info__item__list">
-            {product.product_options?.map((item, index) => (
+            {/* {product.product_options?.map((item, index) => (
               <div
                 key={index}
                 className={`product__info__item__list__item ${
@@ -160,7 +176,27 @@ const ProductView = (props) => {
               >
                 <div className={`circle bg-${item.color}`}></div>
               </div>
-            ))}
+            ))} */}
+
+            {product.product_options
+              ?.filter((item, index, arr) => {
+                return (
+                  arr.findIndex((t) => {
+                    return t.color === item.color;
+                  }) === index
+                );
+              })
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className={`product__info__item__list__item ${
+                    color === item.color ? "active" : ""
+                  }`}
+                  onClick={() => setColor(item.color)}
+                >
+                  <div className={`circle bg-${item.color}`}></div>
+                </div>
+              ))}
           </div>
         </div>
         <div className="product__info__item">
