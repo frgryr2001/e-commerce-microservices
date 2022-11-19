@@ -1,6 +1,8 @@
 {
 	"dependencies": {
-		"concurrently": "^7.5.0"
+		"concurrently": "^7.5.0",
+		"swagger-jsdoc": "^6.2.5",
+		"swagger-ui-express": "^4.6.0"
 	},
 	"name": "final",
 	"version": "1.0.0",
