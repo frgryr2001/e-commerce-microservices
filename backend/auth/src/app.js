@@ -5,7 +5,8 @@ const logger = require("morgan");
 const session = require("express-session");
 const cors = require("cors");
 const userRouter = require("./routes/route");
-
+const userProfileRouter = require("./routes/user");
+const adminRouter = require("./routes/admin");
 // dotenv
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +40,8 @@ app.use(
 
 // routes
 app.use("/v1/api/auth", userRouter);
+app.use("/api/user", userProfileRouter);
+app.use("/api/admin", adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
