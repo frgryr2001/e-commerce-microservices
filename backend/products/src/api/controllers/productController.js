@@ -32,6 +32,12 @@ class ProductController {
 	async getProductById(req, res) {
 		try {
 			const product = await Product.findById(req.params.id);
+			if (!product) {
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Không tìm thấy sản phẩm',
+				});
+			}
 			res.status(200).json({ status: 'Thành công', product: product });
 		} catch (err) {
 			console.error(err.message);
@@ -296,7 +302,7 @@ class ProductController {
 					.json({ status: 'Thất bại', message: 'Sản phẩm không tồn tại' });
 			}
 			product.status = false;
-      console.log(product);
+			console.log(product);
 			await product.save();
 			return await res.status(200).json({
 				product: product,

@@ -32,6 +32,6 @@ const orderDetailSchema = new mongoose.Schema({
 	},
 
 	
-});
+}, { strict: false });
 
 module.exports = mongoose.model('OrderDetail', orderDetailSchema);
