@@ -16,7 +16,7 @@ import rootReducer from "./rootReducer";
 const persistConfig = getPersistConfig({
   key: "root",
   storage,
-  blacklist: ["productModal", "user.error"],
+  blacklist: ["productModal", "user.error", "voucher"],
   rootReducer,
 });
 
