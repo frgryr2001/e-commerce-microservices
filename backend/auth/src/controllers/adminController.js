@@ -10,7 +10,8 @@ class AdminController {
 					status: "Thất bại",
 				});
 			}
-			await user.remove();
+			await user.active = false;
+			await user.save();
 			return res.status(200).json({
 				status: "Thành công",
 				message: "Xóa người dùng thành công",

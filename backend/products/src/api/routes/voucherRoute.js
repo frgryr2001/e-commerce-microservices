@@ -5,18 +5,19 @@ const {
   voucherValidator,
   updateVoucherValidator,
 } = require("../validator/validator");
-
+const isAuthenticated = require("../middlewares/isAuthenticated");
+ 
 const voucherController = require("../controllers/voucherController");
 
 router.get("/", voucherController.getAllVouchers);
 
 router.get("/:code", voucherController.getVoucherByCode);
 
-router.post("/", voucherValidator, voucherController.createVoucher);
+router.post("/",isAuthenticated, voucherValidator, voucherController.createVoucher);
 
-router.put("/:id", updateVoucherValidator, voucherController.updateVoucher);
+router.put("/:id",isAuthenticated, updateVoucherValidator, voucherController.updateVoucher);
 
-router.delete("/:id", voucherController.deleteVoucher);
+router.delete("/:id",isAuthenticated, voucherController.deleteVoucher);
 
 router.get("/use/:id", voucherController.useVoucher);
 
