@@ -15,6 +15,8 @@ router.put('/:id',isAuthenticated, upload, updateProductValidator, productContro
 
 router.delete('/:id',isAuthenticated, productController.deleteProduct);
 
+router.get('/hide/:id',isAuthenticated, productController.hideProduct);
+
 router.get('/option/:id', productController.getProductOptions);
 
 module.exports = router;
