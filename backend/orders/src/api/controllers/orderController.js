@@ -86,7 +86,6 @@ class OrderController {
   async getOrderByEachUser(req, res) {
     try {
       const orders = await Order.find({ user_id: req.user.id });
-
       res.status(200).json({ status: "Thành công ", orders: orders });
     } catch (err) {
       console.error(err.message);
