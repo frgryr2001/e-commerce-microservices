@@ -18,6 +18,14 @@ class OrderController {
   async getAllOrders(req, res) {
     try {
       const orders = await Order.find();
+      for (let i = 0; i < orders.length; i++) {
+        for (let j = 0; j < orders[i].order_detail.length; j++) {
+          let product_data = await axios.get(
+            `${process.env.API_PRODUCT_SERVICE}/api/products/${orders[i].order_detail[j].product_id}`
+          );
+          orders[i].order_detail[j].set("product", product_data.data.product);
+        }
+      }
       res.status(200).json({ status: "Thành công ", orders: orders });
     } catch (err) {
       console.error(err.message);
@@ -86,6 +94,14 @@ class OrderController {
   async getOrderByEachUser(req, res) {
     try {
       const orders = await Order.find({ user_id: req.user.id });
+      for (let i = 0; i < orders.length; i++) {
+        for (let j = 0; j < orders[i].order_detail.length; j++) {
+          let product_data = await axios.get(
+            `${process.env.API_PRODUCT_SERVICE}/api/products/${orders[i].order_detail[j].product_id}`
+          );
+          orders[i].order_detail[j].set("product", product_data.data.product);
+        }
+      }
       res.status(200).json({ status: "Thành công ", orders: orders });
     } catch (err) {
       console.error(err.message);
