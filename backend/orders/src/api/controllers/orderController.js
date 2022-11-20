@@ -39,6 +39,7 @@ class OrderController {
   async changeStatus(req, res) {
     try {
       const { id, status } = req.body;
+
       if (!status) {
         return res.status(400).json({
           status: "Thất bại",
@@ -55,6 +56,7 @@ class OrderController {
       order.status = status;
       await order.save();
       res.status(200).json({
+        order,
         status: "Thành công",
         message: "Cập nhật trạng thái đơn hàng thành công!",
       });

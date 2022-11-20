@@ -1,31 +1,102 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Badge, Dropdown, Space, Table } from "antd";
+import { Badge, Dropdown, Modal, Space, Table } from "antd";
 import React from "react";
-const items = [
-  {
-    key: "1",
-    label: "Action 1",
-  },
-  {
-    key: "2",
-    label: "Action 2",
-  },
-];
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllOrders,
+  updateOrderStatus,
+} from "../../../redux/Orders/orderSlice";
+
+import { toast } from "react-toastify";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+const color = {
+  pink: "Hồng",
+  red: "Đỏ",
+  yellow: "Vàng",
+  green: "Xanh lá",
+  blue: "Xanh dương",
+  purple: "Tím",
+  black: "Đen",
+  white: "Trắng",
+  orange: "Cam",
+};
 const Orders = () => {
-  const expandedRowRender = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth?.token || "");
+  const orders = useSelector((state) => state.orders?.orders);
+  useEffect(() => {
+    dispatch(fetchAllOrders(token));
+  }, [dispatch, token]);
+
+  // sort array by status
+  const sortedOrders = orders
+    .slice()
+    .sort((a, b) => {
+      if (a.status < b.status) {
+        return -1;
+      }
+      if (a.status > b.status) {
+        return 1;
+      }
+      return 0;
+    })
+    .map((order) => {
+      // date
+      const date = new Date(order?.created_at);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
+      const newDate = date.toLocaleDateString("vi-VN", options);
+      const price = new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(order?.total_price);
+
+      return {
+        id_order: order._id,
+        id_row: order._id.slice(0, 12),
+        key: order._id,
+        createdAt: newDate,
+        phone: order.phone,
+        totalPrice: price,
+        status: order.status,
+        order_details: order.order_detail,
+      };
+    });
+
+  const expandedRowRender = (record) => {
+    const newArr = record?.order_details?.map((item) => {
+      // price viet name format
+      const price = new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(item?.price);
+
+      // random id
+      const randomId = Math.floor(Math.random() * 1000000000000000000);
+
+      return {
+        key: item.product_id + randomId,
+        img: item.product.images[0].image_url,
+        name: item.product.name,
+        price: price,
+        quantity: item.quantity,
+        color: color[item.color],
+        size: item.size,
+      };
+    });
     const columns = [
       // img
       {
         title: "Hình sản phẩm",
         dataIndex: "img",
         key: "img",
-        render: (img) => (
-          <img
-            width={100}
-            src="https://i0.wp.com/epthinktank.eu/wp-content/uploads/2021/09/EPRS-Briefing-698028-General-product-safety-regulation-FINAL.png?fit=1000%2C666&ssl=1"
-            alt="img"
-          />
-        ),
+        render: (img) => <img width={100} src={img} alt="img" />,
       },
       {
         title: "Name",
@@ -38,27 +109,59 @@ const Orders = () => {
         key: "price",
       },
       {
+        title: "Màu sắc",
+        dataIndex: "color",
+        key: "color",
+      },
+      {
+        title: "Kích cỡ",
+        dataIndex: "size",
+        key: "size",
+      },
+      {
         title: "Số lượng ",
         dataIndex: "quantity",
         key: "quantity",
       },
     ];
-    const data = [];
-    for (let i = 0; i < 3; ++i) {
-      data.push({
-        key: i.toString(),
-        quantity: "10",
-        name: "This is production name",
-        price: "1.000.000 VNĐ",
-      });
-    }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
+
+    return <Table columns={columns} dataSource={newArr} pagination={false} />;
   };
+
+  const updateStatus = (record) => {
+    dispatch(
+      updateOrderStatus({
+        status: 1,
+        id_order: record.id_order,
+        token,
+        toast,
+      })
+    );
+  };
+  const deleteOrder = (record) => {
+    Modal.confirm({
+      title: "Bạn có chắc muốn hủy đơn hàng này không?",
+      content: "Đơn hàng này sẽ bị hủy",
+      okText: "Hủy đơn hàng",
+      cancelText: "Hủy",
+      onOk() {
+        dispatch(
+          updateOrderStatus({
+            status: 2,
+            id_order: record.id_order,
+            token,
+            toast,
+          })
+        );
+      },
+    });
+  };
+
   const columns = [
     {
       title: "Mã đơn hàng",
-      dataIndex: "idorder",
-      key: "idorder",
+      dataIndex: "id_row",
+      key: "id_row",
     },
     {
       title: "Ngày đặt hàng",
@@ -66,14 +169,9 @@ const Orders = () => {
       key: "createdAt",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
     },
     {
       title: "Tổng tiền",
@@ -81,33 +179,55 @@ const Orders = () => {
       key: "totalPrice",
     },
     {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color, text;
+        if (status === 0) {
+          color = "orange";
+          text = "Chờ duyệt";
+        } else if (status === 1) {
+          color = "green";
+          text = "Đã duyệt";
+        } else if (status === 2) {
+          color = "red";
+          text = "Đã hủy";
+        }
+        return (
+          <Badge
+            status={color}
+            text={text}
+            style={{ width: "100%", textAlign: "center" }}
+          />
+        );
+      },
+    },
+    {
       title: "Action",
       key: "operation",
-      render: () => (
-        <Space size="middle">
-          <Dropdown
-            menu={{
-              items,
-            }}
-          >
-            <a>
-              More <DownOutlined />
-            </a>
-          </Dropdown>
-        </Space>
-      ),
+      render: (record) => {
+        return (
+          <>
+            {record.status === 0 && (
+              <CheckOutlined
+                onClick={() => {
+                  updateStatus(record);
+                }}
+              />
+            )}
+            <CloseOutlined
+              onClick={() => {
+                deleteOrder(record);
+              }}
+              style={{ color: "red", marginLeft: 12 }}
+            />
+          </>
+        );
+      },
     },
   ];
-  const data = [];
 
-  data.push({
-    key: 1,
-    idorder: "Đơn hàng 1",
-    createdAt: "2014-12-24 23:12:00",
-    email: "nhanle.lx@gmail.com",
-    status: "ok",
-    totalPrice: "1.000.000 VNĐ",
-  });
   return (
     <div className="ml-[180px] p-4">
       <Table
@@ -116,7 +236,7 @@ const Orders = () => {
           expandedRowRender,
           defaultExpandedRowKeys: ["0"],
         }}
-        dataSource={data}
+        dataSource={sortedOrders}
       />
     </div>
   );
