@@ -5,6 +5,9 @@ const logger = require('morgan');
 const session = require('express-session');
 const cors = require('cors');
 const amqp = require('amqplib');
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const JWT = require("jsonwebtoken");
 // dotenv
 require('dotenv').config();
 const PORT = process.env.PORT || 3001;
@@ -13,9 +16,40 @@ const connect = require('./database/db');
 //const connectRabbitMQ = require('./database/rabbitmq');
 
 const orderRouter = require('./api/routes/orderRoute');
-
+//swagger setting
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "ORDER API DOCS",
+			version: "1.0.0",
+			description: "Order API on Swagger",
+		},
+    components:{
+      securitySchemes:{
+        bearerAuth:{
+          type:"http",
+          scheme:"bearer",
+          bearerFormat: JWT,
+          in: "header"
+        }
+      }
+    },
+    security:[{
+      bearerAuth:[]
+    }],
+		servers: [
+			{
+				url: "http://localhost:3001",
+			},
+		],
+	},
+	apis: [__dirname.replaceAll("\\","/") + "/api/routes/orderRoute.js"],
+};
+const specs = swaggerJsDoc(options);
 const app = express();
 connect();
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.set('trust proxy', 1);
 app.use(
 	cors({

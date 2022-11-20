@@ -4,12 +4,13 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const cors = require("cors");
-const swaggerUI = require("swagger-ui-express")
-const swaggerJsDoc = require("swagger-jsdoc")
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
+const JWT = require("jsonwebtoken");
 const userRouter = require("./routes/route");
 const userProfileRouter = require("./routes/user");
 const adminRouter = require("./routes/admin");
-const JWT = require("jsonwebtoken");
+
 
 // dotenv
 require("dotenv").config();
@@ -19,13 +20,13 @@ const options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "Library API",
+			title: "AUTHENTICATION API DOCS",
 			version: "1.0.0",
-			description: "A simple Express Library API",
+			description: "Authenticator API on Swagger",
 		},
     components:{
       securitySchemes:{
-        BearerAuth:{
+        bearerAuth:{
           type:"http",
           scheme:"bearer",
           bearerFormat: JWT,
