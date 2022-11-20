@@ -82,7 +82,7 @@ class userService {
     // 3) Send it to user's email
     const resetURL = `${req.get("origin")}/resetPassword/${resetToken}`;
     console.log("Reset Passwrod", resetURL);
-    const message = `Bạn đã quên mật khẩu? Hãy gửi yêu cầu đặt lại mật khẩu của bạn tới: ${resetURL}.\nNếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này!`;
+    const message = `Bạn đã quên mật khẩu? Hãy gửi yêu cầu đặt lại mật khẩu của bạn tới:\n ${resetURL}.\nNếu bạn không yêu cầu đặt lại mật khẩu, hãy bỏ qua email này!`;
 
     try {
       await sendEmail({
