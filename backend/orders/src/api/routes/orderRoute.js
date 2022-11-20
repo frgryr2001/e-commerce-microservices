@@ -15,7 +15,7 @@ router.get('/', isAuthenticated, isAdmin, orderController.getAllOrders);
 // Lấy đơn hàng theo của mình - user
 router.get('/my-order', isAuthenticated, orderController.getOrderByEachUser);
 // THay đổi trạng thái đơn hàng - admin
-router.post('/change-status', isAdmin, isAuthenticated, orderController.changeStatus);
+router.post('/change-status', isAuthenticated, isAdmin, orderController.changeStatus);
 // Lấy đơn hàng theo id - admin
 router.delete('/:id', isAuthenticated, isAdmin, orderController.deleteOrder);
 
