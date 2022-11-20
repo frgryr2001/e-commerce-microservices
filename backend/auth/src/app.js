@@ -9,6 +9,7 @@ const swaggerJsDoc = require("swagger-jsdoc")
 const userRouter = require("./routes/route");
 const userProfileRouter = require("./routes/user");
 const adminRouter = require("./routes/admin");
+const JWT = require("jsonwebtoken");
 
 // dotenv
 require("dotenv").config();
@@ -27,7 +28,8 @@ const options = {
         BearerAuth:{
           type:"http",
           scheme:"bearer",
-          bearerFormat:"JWT"
+          bearerFormat: JWT,
+          in: "header"
         }
       }
     },

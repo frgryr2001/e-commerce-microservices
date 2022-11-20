@@ -129,6 +129,30 @@ export const fetchResetPassword = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async ({ user, token, toast }, { rejectWithValue }) => {
+    console.log(user);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_USER_URL}/update-profile`,
+        user,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      toast.success("Cập nhật thông tin thành công");
+      return response.data;
+    } catch (err) {
+      toast.error(err.response.data.message);
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 // authentication slice
 export const authSlice = createSlice({
   name: "authentication",
@@ -186,6 +210,19 @@ export const authSlice = createSlice({
     [fetchLogout.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload;
+    },
+    [updateUser.pending]: (state) => {
+      state.status = "loading";
+    },
+    [updateUser.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.user = action.payload.user;
+      state.error = null;
+    },
+    [updateUser.rejected]: (state, action) => {
+      console.log(action.payload.message);
+      state.status = "failed";
+      state.error = action.payload.message;
     },
   },
 });

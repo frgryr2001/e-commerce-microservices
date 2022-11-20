@@ -12,6 +12,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import TableHisPayment from "../components/TableHisPayment";
 import ResetPassword from "../pages/ResetPassword";
 import Checkout from "../pages/Checkout";
+import Profile from "../pages/Profile";
 
 const Routes = () => {
   return (
@@ -22,6 +23,7 @@ const Routes = () => {
       <Route path="/cart" component={Cart} />
       <Route path="/purchase-history" component={TableHisPayment} />
       <Route path="/checkout" component={Checkout} />
+      <Route path="/profile" component={Profile} />
 
       {/* login */}
       <Route path="/login" component={Login} />
