@@ -21,9 +21,6 @@ export const createOrder = createAsyncThunk(
       toast.success("Order created successfully");
       dispatch(clearCart());
       dispatch(resetVoucher());
-      //   setTimeout(() => {
-      //     history.push("/cart");
-      //   }, 1500);
 
       return response.data;
     } catch (err) {
@@ -33,9 +30,30 @@ export const createOrder = createAsyncThunk(
     }
   }
 );
+// get orders by user
+export const getOrdersByUser = createAsyncThunk(
+  "orders/getOrdersByUser",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_ORDER_URL}/my-order`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
 
 const initialState = {
-  order: {},
+  order: [],
   status: false,
   error: null,
 };
@@ -50,10 +68,20 @@ const orderSlice = createSlice({
     },
     [createOrder.fulfilled]: (state, action) => {
       state.status = "succesed";
-
-      state.order = action.payload.order;
+      // state.order = [...state.order, action.payload.order];
     },
     [createOrder.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.message;
+    },
+    [getOrdersByUser.pending]: (state) => {
+      state.status = "loadding";
+    },
+    [getOrdersByUser.fulfilled]: (state, action) => {
+      state.status = "succesed";
+      state.order = action.payload.orders;
+    },
+    [getOrdersByUser.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
     },

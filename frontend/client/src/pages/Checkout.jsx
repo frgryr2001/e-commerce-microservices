@@ -25,9 +25,6 @@ const Checkout = () => {
   const [wardChoice, setWardsChoice] = React.useState(0);
   const [costShip, setCostShip] = React.useState(0);
   const addressRef = React.useRef();
-  // console.log("province", provinceChoice);
-  // console.log("district", districtChoice);
-  // console.log("ward", wardChoice);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -129,7 +126,7 @@ const Checkout = () => {
       setCostShip(data.shipping_fee);
       return data.shipping_fee;
     } catch (err) {
-      console.log(err);
+      toast.error(err.response.data.message);
     }
   };
 
