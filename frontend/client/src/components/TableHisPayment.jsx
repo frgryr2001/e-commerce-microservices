@@ -5,25 +5,49 @@ import { useDispatch, useSelector } from "react-redux";
 import { getOrdersByUser } from "../redux/Orders/orderSlice";
 import axios from "axios";
 
+const color = {
+  pink: "Hồng",
+  red: "Đỏ",
+  yellow: "Vàng",
+  green: "Xanh lá",
+  blue: "Xanh dương",
+  purple: "Tím",
+  black: "Đen",
+  white: "Trắng",
+  orange: "Cam",
+};
+
 const TableHisPayment = () => {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.user?.token);
+
   const expandedRowRender = (record) => {
-    console.log(record);
+    const newArr = record?.order_details?.map((item) => {
+      // price viet name format
+      const price = new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(item?.price);
+
+      return {
+        key: item.product_id,
+        img: item.product.images[0].image_url,
+        name: item.product.name,
+        price: price,
+        quantity: item.quantity,
+        color: color[item.color],
+        size: item.size,
+      };
+    });
+
     const columns = [
       // img
       {
         title: "Hình sản phẩm",
         dataIndex: "img",
         key: "img",
-        render: (img) => (
-          <img
-            width={100}
-            src="https://i0.wp.com/epthinktank.eu/wp-content/uploads/2021/09/EPRS-Briefing-698028-General-product-safety-regulation-FINAL.png?fit=1000%2C666&ssl=1"
-            alt="img"
-          />
-        ),
+        render: (img) => <img width={100} src={img} alt="img" />,
       },
       {
         title: "Name",
@@ -51,18 +75,7 @@ const TableHisPayment = () => {
         key: "quantity",
       },
     ];
-    const data = [];
-    for (let i = 0; i < record.order_details.length; ++i) {
-      data.push({
-        key: i.toString(),
-        quantity: "10",
-        name: "This is production name",
-        price: record.order_details[i].price,
-        color: record.order_details[i].color,
-        size: record.order_details[i].size,
-      });
-    }
-    return <Table columns={columns} dataSource={data} pagination={false} />;
+    return <Table columns={columns} dataSource={newArr} pagination={false} />;
   };
 
   useEffect(() => {
@@ -73,11 +86,27 @@ const TableHisPayment = () => {
 
   const orders = useSelector((state) => state.orders?.order || []);
   const newOrders = orders?.map((order) => {
+    const price = new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(order?.total_price);
+
+    // date format vietnamese
+    const date = new Date(order?.created_at);
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    const newDate = date.toLocaleDateString("vi-VN", options);
+
     return {
       id_order: order._id,
       key: order._id,
-      createdAt: order.createdAt,
-      totalPrice: order.total_price,
+      createdAt: newDate,
+      totalPrice: price,
       status: order.status,
       order_details: order.order_detail,
     };
