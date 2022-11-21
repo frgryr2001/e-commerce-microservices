@@ -70,14 +70,18 @@ const ProductView = (props) => {
   const addToCart = () => {
     if (check()) {
       // find id product option by color and size
-      const productOption = product.product_options.find(
+      const productOption = product.product_options?.find(
         (option) =>
           option.color === color && option.size === size && option.quantity > 0
       );
+      if (!productOption) {
+        toast.warning("Sản phẩm không có trong kho");
+        return;
+      }
 
       let newItem = {
         id: product._id,
-        id_productOption: productOption._id,
+        id_productOption: productOption?._id,
         slug: product.slug,
         color: color,
         size: size,

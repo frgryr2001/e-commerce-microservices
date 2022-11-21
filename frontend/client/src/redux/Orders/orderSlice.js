@@ -119,7 +119,10 @@ const orderSlice = createSlice({
       state.status = "succesed";
       state.order = state.order.map((order) => {
         if (order._id === action.payload.order._id) {
-          return action.payload.order;
+          // change status
+          order.status = action.payload.order.status;
+
+          return order;
         }
         return order;
       });

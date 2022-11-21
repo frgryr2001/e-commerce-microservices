@@ -1,6 +1,6 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Badge, Dropdown, Space, Table, Button, Modal } from "antd";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getOrdersByUser,
@@ -22,10 +22,11 @@ const color = {
 
 const TableHisPayment = () => {
   const dispatch = useDispatch();
+  // const [load, setLoad] = useState(false);
 
   const token = useSelector((state) => state.user?.token);
 
-  const expandedRowRender = (record) => {
+  const expandedRowRender = useCallback((record) => {
     const newArr = record?.order_details?.map((item) => {
       // price viet name format
       const price = new Intl.NumberFormat("vi-VN", {
@@ -35,8 +36,8 @@ const TableHisPayment = () => {
 
       return {
         key: item.product_id,
-        img: item.product.images[0].image_url,
-        name: item.product.name,
+        img: item.product?.images[0]?.image_url,
+        name: item.product?.name,
         price: price,
         quantity: item.quantity,
         color: color[item.color],
@@ -79,7 +80,7 @@ const TableHisPayment = () => {
       },
     ];
     return <Table columns={columns} dataSource={newArr} pagination={false} />;
-  };
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -89,6 +90,7 @@ const TableHisPayment = () => {
 
   const orders = useSelector((state) => state.orders?.order || []);
   const newOrders = orders?.map((order) => {
+    console.log(order?.total_price);
     const price = new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -289,10 +291,12 @@ const TableHisPayment = () => {
         columns={columns}
         expandable={{
           expandedRowRender,
-          defaultExpandedRowKeys: ["0"],
+
           // close when click on other row
           // expandRowByClick: true,
         }}
+        // collapse when row is expanded
+
         dataSource={newOrders || []}
       />
     </div>

@@ -19,6 +19,18 @@ import { useSelector } from "react-redux";
 const { TextArea } = Input;
 const { Option } = Select;
 
+const colorOptionProduct = {
+  pink: "Hồng",
+  red: "Đỏ",
+  yellow: "Vàng",
+  green: "Xanh lá",
+  blue: "Xanh dương",
+  purple: "Tím",
+  black: "Đen",
+  white: "Trắng",
+  orange: "Cam",
+};
+
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -241,7 +253,7 @@ const FormCustom = ({
         <Col span={12}>
           <Button
             type="primary"
-            style={{ float: "right", marginRight: "40px" }}
+            style={{ float: "right" }}
             onClick={createOptionProduct}
           >
             Tạo
@@ -253,8 +265,8 @@ const FormCustom = ({
                 return (
                   <li key={index} className="flex items-center gap-5">
                     <span>
-                      Màu : {option.color} - Kích cỡ: {option.size} - Số lượng:{" "}
-                      {option.quantity}
+                      Màu : {colorOptionProduct[option.color]} - Kích cỡ:{" "}
+                      {option.size} - Số lượng: {option.quantity}
                     </span>
 
                     <DeleteOutlined
@@ -275,7 +287,7 @@ const FormCustom = ({
                 return (
                   <li key={index} className="flex items-center gap-5">
                     <span>
-                      Màu : {option.color} - Kích cỡ: {option.size} - Số lượng:{" "}
+                      Màu : {option.color} - Kích cỡ: {option.size} - Số lượng:
                       {option.quantity}
                     </span>
 

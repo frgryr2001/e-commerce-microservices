@@ -46,6 +46,7 @@ class OrderController {
       //   });
       // }
       const order = await Order.findById(id);
+
       if (!order) {
         return res.status(400).json({
           status: "Thất bại",
