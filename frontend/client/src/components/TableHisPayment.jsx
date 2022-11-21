@@ -111,6 +111,7 @@ const TableHisPayment = () => {
       createdAt: newDate,
       totalPrice: price,
       status: order.status,
+      address: order.address,
       order_details: order.order_detail,
     };
   });
@@ -182,6 +183,11 @@ const TableHisPayment = () => {
       title: "Ngày đặt hàng",
       dataIndex: "createdAt",
       key: "createdAt",
+    },
+    {
+      title: "Địa chỉ nhận hàng",
+      dataIndex: "address",
+      key: "address",
     },
 
     {

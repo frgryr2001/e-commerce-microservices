@@ -39,12 +39,12 @@ class OrderController {
   async changeStatus(req, res) {
     try {
       const { id, status } = req.body;
-      if (!status) {
-        return res.status(400).json({
-          status: "Thất bại",
-          message: "Thiếu trường status!",
-        });
-      }
+      // if (status) {
+      //   return res.status(400).json({
+      //     status: "Thất bại",
+      //     message: "Thiếu trường status!",
+      //   });
+      // }
       const order = await Order.findById(id);
       if (!order) {
         return res.status(400).json({
