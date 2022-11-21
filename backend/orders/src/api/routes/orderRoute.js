@@ -4,6 +4,46 @@ const { feeShipValidator, orderValidator } = require("../validator/validator");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const orderController = require("../controllers/orderController");
 const isAdmin = require("../middlewares/roleCheck");
+/** 
+*@swagger
+*components:
+*   schemas:
+*     Product:
+*       type: object
+*       required:
+*         -product_id
+*         -product_option_id
+*         -quantity
+*         -price
+*         -size
+*         -color
+*       properties:
+*         product_id:
+*           type: string
+*           description: Id of product
+*         product_option_id:
+*           type: string
+*           description: product option Id
+*         quantity:
+*           type: number
+*           description: quantity
+*         price:
+*           type: number
+*           description: Price of product
+*         size: 
+*           type: number
+*           description: Size of product
+*         color: 
+*          type: string  
+*          description: Color of district
+*       example:
+*         product_id : 637b8a1b0922b5e669b8cdc3
+*         product_option_id : 637b8a1b0922b5e669b8cdc5
+*         quantity: 1
+*         price: 200000
+*         size: 20
+*         color: đỏ
+*/
 
 router.get("/test", isAuthenticated, orderController.test);
 // Tính phí ship đơn hàng - user
@@ -85,43 +125,25 @@ router.post("/shipping-fees", feeShipValidator, orderController.getShippingFee);
  *                  description: Id of province
  *                  default: 269
  *               district_id:
- *                 type: string
+ *                 type: number
  *                 description: Id of district
  *                 default: 1449
  *               ward_id:
- *                 type: number
+ *                 type: string
  *                 description: Id of ward
- *                 default: 10
+ *                 default: 20710
  *               address:
  *                 type: string
  *                 description: Address
  *                 default: 19 nguyễn hữu thọ
  *               voucher_code:
  *                 type: string
- *                 description: Address
+ *                 description: voucher
  *                 default: codeptl123456
  *               products:
- *                 type: object
- *                 description: Products object
- *                 properties:
- *                   product_id:
- *                     type: string
- *                     default: 63785b15c7bb12cf51b24133
- *                   product_option_id:
- *                     type: string
- *                     default: 63785b15c7bb12cf51b24135
- *                   quantity:
- *                     type: number
- *                     default: 20
- *                   price:
- *                     type: number
- *                     default: 200000
- *                   size:
- *                     type: string
- *                     default: 20
- *                   color:
- *                     type: string
- *                     default: đỏ
+ *                  type: array
+ *                  items:
+ *                   $ref: '#/components/schemas/Product'            
  *     responses:
  *       200:
  *         description: Create order successfully
@@ -303,60 +325,6 @@ router.get("/my-order", isAuthenticated, orderController.getOrderByEachUser);
  *         description: Get the order error
  */
 router.post("/change-status", isAuthenticated, orderController.changeStatus);
-// Lấy đơn hàng theo id - admin
-/**
- * @swagger
- * /api/orders/{id}:
- *   delete:
- *     summary: Delete the orders by id
- *     tags: [Order]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The id of order
- *     responses:
- *       200:
- *         description: Delete the orders by id successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                    type: string
- *                    default: Thành công
- *                 message:
- *                    type: string
- *                    default: Xóa đơn hàng thành công!
- *       400:
- *         description: Delete the orders by id fail
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                    type: string
- *                    default: Thất bại
- *                 message:
- *                    type: string
- *                    default: Xóa đơn hàng thất bại!
- *       403:
- *         description: Not Authenticated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 msg:
- *                    type: string
- *                    default: You are Authenticated
- *       500:
- *         description: Delete the order error
- */
 router.delete("/:id", isAuthenticated, isAdmin, orderController.deleteOrder);
 
 module.exports = router;
