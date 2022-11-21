@@ -59,8 +59,6 @@ exports.orderValidator = [
 	check('products').custom(async value => {
 		let products = value;
 		for (let i = 0; i < products.length; i++) {
-			console.log(products[i]);
-			console.log(products[i].product_option_id);
 			let product_option_data = await axios
 				.get(
 					`${process.env.API_PRODUCT_SERVICE}/api/products/option/${products[i].product_option_id}`,
@@ -73,6 +71,9 @@ exports.orderValidator = [
 				.catch(err => {
 					throw new Error('Sản phẩm không tồn tại');
 				});
+			if (!product_option_data.data.product_option) {
+				throw new Error('Sản phẩm không tồn tại');
+			}
 			if (product_option_data.data.product_option.quantity < products[i].quantity) {
 				throw new Error(`Sản phẩm không đủ số lượng để đặt hàng!`);
 			}
