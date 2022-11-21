@@ -162,16 +162,16 @@ class OrderController {
         products,
         shipping_fee,
       } = req.body;
-      let products_price = await products.reduce((total, product) => {
-        return (total += product.price * product.quantity);
-      }, 0);
-      let quantity = await products.reduce((total, product) => {
-        return (total += product.quantity);
-      }, 0);
       let order_detail_lst = [];
       let voucher_price = 0;
       let total_price = 0;
       try {
+        let products_price = await products.reduce((total, product) => {
+          return (total += product.price * product.quantity);
+        }, 0);
+        let quantity = await products.reduce((total, product) => {
+          return (total += product.quantity);
+        }, 0);
         const fee_res = await axios
           .post(
             `${process.env.API_ORDER_SERVICE}/api/orders/shipping-fees`,

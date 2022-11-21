@@ -37,7 +37,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(
 	cors({
-		origin: ['http://localhost:3001', 'http://localhost:3006', 'http://localhost:3007'],
+		origin: ['http://localhost:3001','http://localhost:3002', 'http://localhost:3006', 'http://localhost:3007'],
 		credentials: true,
 	})
 );
