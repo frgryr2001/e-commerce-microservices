@@ -231,6 +231,32 @@ class OrderController {
           total_price,
           status: 0,
         });
+        const updateQuantity = axios
+          .post(
+            `${process.env.API_PRODUCT_SERVICE}/api/products/update-quantity`,
+            {
+              products: products,
+              signal: 0,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .catch(function (error) {
+            if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              console.log(error.request);
+            } else {
+              console.log("Error", error.message);
+            }
+            console.log(error.config);
+            console.log(error);
+          });
 
         for (let i = 0; i < products.length; i++) {
           let order_detail = await new OrderDetail({

@@ -3,6 +3,7 @@ const Product = require('../../models/productModel');
 const ProductImage = require('../../models/productImageModel');
 const ProductOption = require('../../models/product_optionModel');
 const Category = require('../../models/categoryModel');
+const mongoose = require('mongoose');
 const multer = require('multer');
 require('dotenv').config();
 const FormData = require('form-data');
@@ -315,6 +316,76 @@ class ProductController {
 				message: 'Ẩn sản phẩm không thành công',
 				status: 'Thất bại',
 			});
+		}
+	}
+
+	async updateQuantity(req, res) {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				status: 'Thất bại, vui lòng kiểm tra lại',
+				errors: errors.array()[0].msg,
+			});
+		} else {
+			try {
+				const { products, signal } = req.body;
+				for (let i = 0; i < products.length; i++) {
+					const product = await Product.findById(products[i].product_id);
+					if (!product) {
+						await session.abortTransaction();
+						await session.endSession();
+						return res
+							.status(400)
+							.json({ status: 'Thất bại', message: 'Sản phẩm không tồn tại' });
+					}
+					const product_option = await ProductOption.findById(
+						products[i].product_option_id
+					);
+					if (!product_option) {
+						return res
+							.status(400)
+							.json({ status: 'Thất bại', message: 'Sản phẩm không tồn tại' });
+					}
+					if (signal === 0) {
+						if (product_option.quantity < products[i].quantity) {
+							return res.status(400).json({
+								status: 'Thất bại',
+								message: 'Số lượng sản phẩm không đủ',
+							});
+						} else {
+							product_option.quantity -= products[i].quantity;
+							for (let j = 0; j < product.product_options.length; j++) {
+								console.log(product.product_options[j]._id.toString());
+								console.log(product_option._id.toString());
+								if (product.product_options[j]._id.toString() === product_option._id.toString()) {
+									console.log('test');
+									product.product_options[j].quantity = product_option.quantity;
+								}
+							}
+						}
+					} else {
+						product_option.quantity += products[i].quantity;
+						for (let j = 0; j < product.product_options.length; j++) {
+							if (product.product_options[j]._id.toString() === product_option._id.toString()) {
+								product.product_options[j].quantity = product_option.quantity;
+							}
+						}
+					}
+
+					await product.save();
+					await product_option.save();
+				}
+				return res.status(200).json({
+					status: 'Thành công',
+					message: 'Cập nhật số lượng sản phẩm thành công',
+				});
+			} catch (error) {
+				console.log(error);
+				return res.status(400).json({
+					status: 'Thất bại',
+					message: 'Cập nhật số lượng sản phẩm không thành công!',
+				});
+			}
 		}
 	}
 }
