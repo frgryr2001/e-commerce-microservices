@@ -9,7 +9,6 @@ const isAdmin = require('../middlewares/roleCheck');
 
 const { productValidator, updateProductValidator } = require('../validator/validator');
 
-
 // Lấy tất cả sản phẩm - all
 router.get('/', productController.getAllProducts);
 // Lấy sản phẩm theo id - all
@@ -38,5 +37,7 @@ router.delete('/:id', isAuthenticated, isAdmin, productController.deleteProduct)
 router.get('/hide/:id', isAuthenticated, isAdmin, productController.hideProduct);
 // Lấy kiểu sản phẩm bằng id sản phẩm - all
 router.get('/option/:id', productController.getProductOptions);
+
+router.post('/update-quantity', productController.updateQuantity);
 
 module.exports = router;
