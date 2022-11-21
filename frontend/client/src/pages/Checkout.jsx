@@ -165,7 +165,23 @@ const Checkout = () => {
   });
 
   const onPaymentClick = () => {
-    const address = addressRef.current.value;
+    // find label of province, district, ward
+    const provinceLabel = listProvinceIdName?.find(
+      (item) => item.value === provinceChoice
+    );
+    const districtLabel = listDistrictIdName?.find(
+      (item) => item.value === districtChoice
+    );
+    const wardLabel = listWardIdName?.find((item) => item.value === wardChoice);
+
+    const address =
+      addressRef.current.value +
+      ", " +
+      wardLabel.label +
+      ", " +
+      districtLabel.label +
+      ", " +
+      provinceLabel.label;
     const order = {
       province_id: provinceChoice,
       district_id: districtChoice,

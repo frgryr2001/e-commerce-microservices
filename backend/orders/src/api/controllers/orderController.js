@@ -107,7 +107,11 @@ class OrderController {
           orders[i].order_detail[j].set("product", product_data.data.product);
         }
       }
-      res.status(200).json({ status: "Thành công ", orders: orders });
+      res.status(200).json({
+        status: "Thành công ",
+        orders: orders,
+        message: "Lấy danh sách đơn hàng thành công",
+      });
     } catch (err) {
       console.error(err.message);
       res.status(400).json({
