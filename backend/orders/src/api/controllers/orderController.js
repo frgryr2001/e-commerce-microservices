@@ -222,9 +222,11 @@ class OrderController {
           );
           voucher_price =
             (products_price * (100 - voucher_data.data.voucher.discount)) / 100;
+          total_price = voucher_price + shipping_fee;
+        } else {
+          total_price = products_price + shipping_fee;
         }
 
-        total_price = products_price - voucher_price + shipping_fee;
         const order = await new Order({
           user_id: req.user.id,
           voucher_code,

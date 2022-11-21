@@ -159,7 +159,7 @@ const Orders = () => {
       onOk() {
         dispatch(
           updateOrderStatus({
-            status: 2,
+            status: 5,
             id_order: record.id_order,
             token,
             toast,

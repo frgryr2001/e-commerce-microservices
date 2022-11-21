@@ -90,7 +90,6 @@ const TableHisPayment = () => {
 
   const orders = useSelector((state) => state.orders?.order || []);
   const newOrders = orders?.map((order) => {
-    console.log(order?.total_price);
     const price = new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -284,7 +283,6 @@ const TableHisPayment = () => {
       ),
     },
   ];
-  console.log("newOrders", newOrders);
   return (
     <div className="ml-[180px] p-4">
       <Table

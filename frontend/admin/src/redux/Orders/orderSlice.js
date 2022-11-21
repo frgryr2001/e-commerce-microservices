@@ -72,9 +72,13 @@ export const orderSlice = createSlice({
     },
     [updateOrderStatus.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      state.orders = state.orders.map((order) =>
-        order._id === action.payload.order._id ? action.payload.order : order
-      );
+      state.orders = state.orders.map((order) => {
+        if (order._id === action.payload.order._id) {
+          order.status = action.payload.order.status;
+          return order;
+        }
+        return order;
+      });
     },
     [updateOrderStatus.rejected]: (state, action) => {
       state.status = "failed";
