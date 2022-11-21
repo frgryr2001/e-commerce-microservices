@@ -17,6 +17,7 @@ const { Column } = Table;
 
 const ListCategory = ({ categories }) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth?.token);
   const isLoading = useSelector(
     (state) => state.categories?.status === "loading"
   );
@@ -69,7 +70,9 @@ const ListCategory = ({ categories }) => {
                       okType: "danger",
                       cancelText: "Hủy",
                       onOk() {
-                        dispatch(deleteCategory({ id: record.key, toast }));
+                        dispatch(
+                          deleteCategory({ id: record.key, toast, token })
+                        );
                       },
                     });
                   }}
@@ -89,7 +92,7 @@ const ListCategory = ({ categories }) => {
           resetEditing();
         }}
         onOk={() => {
-          dispatch(updateCategory({ categoryName: name, id, toast }));
+          dispatch(updateCategory({ categoryName: name, id, toast, token }));
           resetEditing();
         }}
       >

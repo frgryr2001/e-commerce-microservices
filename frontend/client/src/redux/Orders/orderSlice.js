@@ -6,7 +6,7 @@ import { resetVoucher } from "../Voucher/voucherSlice";
 // create order
 export const createOrder = createAsyncThunk(
   "orders/createOrder",
-  async ({ order, token, toast, dispatch }, { rejectWithValue }) => {
+  async ({ order, token, toast, dispatch, setCheck }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_ORDER_URL}/create`,
@@ -21,6 +21,7 @@ export const createOrder = createAsyncThunk(
       toast.success("Order created successfully");
       dispatch(clearCart());
       dispatch(resetVoucher());
+      setCheck(true);
 
       return response.data;
     } catch (err) {

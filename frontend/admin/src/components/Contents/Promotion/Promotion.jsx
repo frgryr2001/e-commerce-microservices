@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, DatePicker } from "antd";
 import ListPromotion from "../ListPromotion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createVoucher } from "../../../redux/Voucher/voucherSlice";
 import { toast } from "react-toastify";
 const { RangePicker } = DatePicker;
@@ -9,12 +9,13 @@ const { RangePicker } = DatePicker;
 const Promotion = () => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const token = useSelector((state) => state.auth?.token);
 
   const [isEditing, setIsEditing] = useState(false);
   const onFinish = (values) => {
     const endDate = values.expiredDate[1].format("YYYY-MM-DD"); // here
     values.expiredDate = endDate;
-    dispatch(createVoucher({ data: values, form, toast }));
+    dispatch(createVoucher({ data: values, form, toast, token }));
   };
   console.log("values");
 

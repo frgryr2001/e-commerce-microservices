@@ -11,7 +11,7 @@ import { getAllCategories } from "../../redux/Category/categorySlice";
 export default function ModalWithForm({ visible, setVisible }) {
   const [form] = Form.useForm();
   const [optionsProduct, setOptionsProduct] = useState([]);
-
+  const token = useSelector((state) => state.auth?.token);
   const dispatch = useDispatch();
   const onFinish = (productData) => {
     const product = {
@@ -19,7 +19,7 @@ export default function ModalWithForm({ visible, setVisible }) {
       product_options: optionsProduct,
     };
     console.log(product);
-    dispatch(createProduct({ product, form, toast }));
+    dispatch(createProduct({ product, form, toast, token }));
     setOptionsProduct([]);
   };
   useEffect(() => {

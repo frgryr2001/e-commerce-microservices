@@ -20,6 +20,7 @@ const Products = () => {
   const isLoading = useSelector(
     (state) => state.products?.status === "loading"
   );
+  const token = useSelector((state) => state.auth?.token);
 
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
@@ -100,7 +101,7 @@ const Products = () => {
       okText: "Yes",
       okType: "danger",
       onOk: () => {
-        dispatch(deleteProduct({ id: record._id, toast }));
+        dispatch(deleteProduct({ id: record._id, toast, token }));
       },
     });
   };

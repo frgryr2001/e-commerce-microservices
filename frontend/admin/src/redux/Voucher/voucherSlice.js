@@ -4,11 +4,17 @@ import axios from "axios";
 // create voucher
 export const createVoucher = createAsyncThunk(
   "voucher/createVoucher",
-  async ({ data, form, toast }, { rejectWithValue }) => {
+  async ({ data, form, toast, token }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_PRODUCT_URL}/voucher`,
-        data
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("Tạo voucher thành công");
       form.resetFields();
@@ -37,15 +43,19 @@ export const getAllVouchers = createAsyncThunk(
 // update voucher
 export const updateVoucher = createAsyncThunk(
   "voucher/updateVoucher",
-  async ({ data, toast, id }, { rejectWithValue }) => {
-    console.log(data);
-    console.log(id);
+  async ({ data, toast, id, token }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API_PRODUCT_URL}/voucher/${id}`,
-        data
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      console.log(response.data);
+
       toast.success("Cập nhật voucher thành công");
       return response.data;
     } catch (err) {
@@ -59,10 +69,16 @@ export const updateVoucher = createAsyncThunk(
 // delete voucher
 export const deleteVoucher = createAsyncThunk(
   "voucher/deleteVoucher",
-  async ({ id, toast }, { rejectWithValue }) => {
+  async ({ id, toast, token }, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/voucher/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("Xóa voucher thành công");
       return response.data;
