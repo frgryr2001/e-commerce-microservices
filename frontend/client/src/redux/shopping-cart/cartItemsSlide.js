@@ -77,6 +77,7 @@ export const cartItemsSlice = createSlice({
           {
             id: item[0].id,
             slug: newItem.slug,
+            id_productOption: newItem.id_productOption,
             color: newItem.color,
             size: newItem.size,
             price: newItem.price,

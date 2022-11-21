@@ -7,6 +7,17 @@ import { updateItem, removeItem } from "../redux/shopping-cart/cartItemsSlide";
 import numberWithCommas from "../utils/numberWithCommas";
 import { Link } from "react-router-dom";
 import productData from "../utils/products";
+const color = {
+  pink: "Hồng",
+  red: "Đỏ",
+  blue: "Xanh",
+  yellow: "Vàng",
+  green: "Xanh lá",
+  purple: "Tím",
+  black: "Đen",
+  white: "Trắng",
+  orange: "Cam",
+};
 const CartItem = (props) => {
   const dispatch = useDispatch();
 
@@ -48,7 +59,9 @@ const CartItem = (props) => {
       <div className="cart__item__info">
         <div className="cart__item__info__name">
           <Link to={`/catalog/${item.slug}`}>
-            {`${item.product?.name} - Màu: ${item.color} - Kích cỡ: ${item.size}`}
+            {`${item.product?.name} - Màu: ${color[item.color]} - Kích cỡ: ${
+              item.size
+            }`}
           </Link>
         </div>
         <div className="cart__item__info__price">

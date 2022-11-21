@@ -1,7 +1,7 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Badge, Dropdown, Modal, Space, Table } from "antd";
+import { Badge, Modal, Table, Form, Select } from "antd";
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllOrders,
@@ -10,6 +10,8 @@ import {
 
 import { toast } from "react-toastify";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
 const color = {
   pink: "Hồng",
   red: "Đỏ",
@@ -23,6 +25,9 @@ const color = {
 };
 const Orders = () => {
   const dispatch = useDispatch();
+  const [isEditing, setIsEditing] = useState(false);
+  const [status, setStatus] = useState("");
+  const [idOrder, setIdOrder] = useState("");
   const token = useSelector((state) => state.auth?.token || "");
   const orders = useSelector((state) => state.orders?.orders);
   useEffect(() => {
@@ -68,6 +73,10 @@ const Orders = () => {
         order_details: order.order_detail,
       };
     });
+
+  const resetEditing = () => {
+    setIsEditing(false);
+  };
 
   const expandedRowRender = (record) => {
     const newArr = record?.order_details?.map((item) => {
@@ -129,14 +138,17 @@ const Orders = () => {
   };
 
   const updateStatus = (record) => {
-    dispatch(
-      updateOrderStatus({
-        status: 1,
-        id_order: record.id_order,
-        token,
-        toast,
-      })
-    );
+    setIsEditing(true);
+    setIdOrder(record.id_order);
+
+    // dispatch(
+    //   updateOrderStatus({
+    //     status: 1,
+    //     id_order: record.id_order,
+    //     token,
+    //     toast,
+    //   })
+    // );
   };
   const deleteOrder = (record) => {
     Modal.confirm({
@@ -155,6 +167,10 @@ const Orders = () => {
         );
       },
     });
+  };
+
+  const onChangeSelect = (value, record) => {
+    setStatus(value);
   };
 
   const columns = [
@@ -186,13 +202,22 @@ const Orders = () => {
         let color, text;
         if (status === 0) {
           color = "orange";
-          text = "Chờ duyệt";
+          text = " Đang xử lí";
         } else if (status === 1) {
           color = "green";
-          text = "Đã duyệt";
+          text = "Đơn hàng đã được duyệt - đang chờ đóng gói";
         } else if (status === 2) {
+          color = "yellow";
+          text = "Đang giao hàng";
+        } else if (status === 3) {
+          color = "blue";
+          text = "Đã giao hàng";
+        } else if (status === 4) {
           color = "red";
-          text = "Đã hủy";
+          text = "Giao hàng không thành công";
+        } else if (status === 5) {
+          color = "red";
+          text = "Đơn hàng bị hủy";
         }
         return (
           <Badge
@@ -209,19 +234,22 @@ const Orders = () => {
       render: (record) => {
         return (
           <>
-            {record.status === 0 && (
+            {record.status !== 5 && record.status !== 3 && (
               <CheckOutlined
                 onClick={() => {
                   updateStatus(record);
                 }}
               />
             )}
-            <CloseOutlined
-              onClick={() => {
-                deleteOrder(record);
-              }}
-              style={{ color: "red", marginLeft: 12 }}
-            />
+
+            {record.status !== 5 && record.status !== 3 && (
+              <CloseOutlined
+                onClick={() => {
+                  deleteOrder(record);
+                }}
+                style={{ color: "red", marginLeft: 12 }}
+              />
+            )}
           </>
         );
       },
@@ -238,6 +266,47 @@ const Orders = () => {
         }}
         dataSource={sortedOrders}
       />
+      <Modal
+        title="Kiểm duyệt đơn hàng"
+        visible={isEditing}
+        width={"70%"}
+        okText="Lưu"
+        // confirmLoading={isLoading}
+        onCancel={() => {
+          resetEditing();
+        }}
+        onOk={() => {
+          dispatch(
+            updateOrderStatus({
+              status: status,
+              id_order: idOrder,
+              token,
+              toast,
+            })
+          );
+          resetEditing();
+        }}
+      >
+        <Form.Item label="Trạng thái">
+          <Select placeholder="Trạng thái" onChange={onChangeSelect}>
+            <Option key={1} value={1}>
+              Duyệt đơn hàng
+            </Option>
+            <Option key={2} value={2}>
+              Đang giao hàng
+            </Option>
+            {/* <Option key={3} value={3}>
+              Giao hàng thành công
+            </Option>
+            <Option key={4} value={4}>
+              Giao hàng không thành công
+            </Option>
+            <Option key={5} value={5}>
+              Hủy đơn hàng
+            </Option> */}
+          </Select>
+        </Form.Item>
+      </Modal>
     </div>
   );
 };

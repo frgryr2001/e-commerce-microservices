@@ -138,7 +138,7 @@ const ListPromotion = () => {
     <>
       <Table columns={columns} dataSource={newData} onChange={onChange} />
       <Modal
-        title="Chỉnh sửa danh mục"
+        title="Chỉnh sửa khuyến mãi"
         visible={isEditing}
         width={"70%"}
         okText="Lưu"

@@ -53,6 +53,32 @@ export const getOrdersByUser = createAsyncThunk(
   }
 );
 
+// update status
+export const updateOrderStatusUser = createAsyncThunk(
+  "orders/updateOrderStatusUser",
+  async ({ status, id_order, token, toast }, { rejectWithValue }) => {
+    console.log(status, id_order, token);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_ORDER_URL}/change-status`,
+        { status: status * 1, id: id_order },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      toast.success("Đơn hàng đã được cập nhật");
+
+      return response.data;
+    } catch (err) {
+      toast.error("Đơn hàng chưa được cập nhật");
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
 const initialState = {
   order: [],
   status: false,
@@ -83,6 +109,22 @@ const orderSlice = createSlice({
       state.order = action.payload.orders;
     },
     [getOrdersByUser.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.message;
+    },
+    [updateOrderStatusUser.pending]: (state) => {
+      state.status = "loadding";
+    },
+    [updateOrderStatusUser.fulfilled]: (state, action) => {
+      state.status = "succesed";
+      state.order = state.order.map((order) => {
+        if (order._id === action.payload.order._id) {
+          return action.payload.order;
+        }
+        return order;
+      });
+    },
+    [updateOrderStatusUser.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
     },

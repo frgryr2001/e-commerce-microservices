@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import SelectOption from "../components/SelectOption";
 import classes from "./Checkout.module.css";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, CheckCircleOutlined } from "@ant-design/icons";
+
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../redux/Orders/orderSlice";
@@ -125,7 +126,7 @@ const Checkout = () => {
       setCostShip(data.shipping_fee);
       return data.shipping_fee;
     } catch (err) {
-      toast.error(err.response.data.message);
+      // toast.error(err.response.data.message);
     }
   };
 
@@ -179,10 +180,14 @@ const Checkout = () => {
   return (
     <div className={classes.row}>
       {check && (
-        <div>
+        <div style={{ textAlign: "center", margin: "auto" }}>
           {/* đặt hàng thành công */}
-          <p className={classes.success}>Đặt hàng thành công</p>
-          <Link to="/catalog">Tiếp tục mua hàng</Link>
+          <p className={classes.success}>
+            <CheckCircleOutlined /> Đặt hàng thành công
+          </p>
+          <Link to="/catalog" style={{ fontSize: "20px" }}>
+            &larr;Tiếp tục mua hàng
+          </Link>
         </div>
       )}
       {!check && (

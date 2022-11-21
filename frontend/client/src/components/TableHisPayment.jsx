@@ -1,10 +1,13 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Badge, Dropdown, Space, Table } from "antd";
+import { Badge, Dropdown, Space, Table, Button, Modal } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrdersByUser } from "../redux/Orders/orderSlice";
-import axios from "axios";
-
+import {
+  getOrdersByUser,
+  updateOrderStatusUser,
+} from "../redux/Orders/orderSlice";
+// import axios from "axios";
+import { toast } from "react-toastify";
 const color = {
   pink: "Hồng",
   red: "Đỏ",
@@ -112,6 +115,63 @@ const TableHisPayment = () => {
     };
   });
 
+  const onCancelOrder = (record) => {
+    Modal.confirm({
+      title: "Bạn có chắc muốn hủy đơn hàng này không?",
+      content: "Hủy đơn hàng",
+      okText: "Hủy đơn hàng",
+      cancelText: "Hủy",
+      onOk() {
+        dispatch(
+          updateOrderStatusUser({
+            status: 5,
+            id_order: record.id_order,
+            token,
+            toast,
+          })
+        );
+      },
+    });
+  };
+  const onConfirmOrder = (record) => {
+    dispatch(
+      updateOrderStatusUser({
+        status: 3,
+        id_order: record.id_order,
+        token,
+        toast,
+      })
+    );
+  };
+  const onNotConfirmOrder = (record) => {
+    dispatch(
+      updateOrderStatusUser({
+        status: 4,
+        id_order: record.id_order,
+        token,
+        toast,
+      })
+    );
+  };
+  const onReOrder = (record) => {
+    Modal.confirm({
+      title: "Bạn có chắc muốn đặt lại đơn hàng này không?",
+      content: "Đặt lại đơn hàng",
+      okText: "Đặt lại đơn hàng",
+      cancelText: "Hủy",
+      onOk() {
+        dispatch(
+          updateOrderStatusUser({
+            status: 0,
+            id_order: record.id_order,
+            token,
+            toast,
+          })
+        );
+      },
+    });
+  };
+
   const columns = [
     {
       title: "Mã đơn hàng",
@@ -138,25 +198,85 @@ const TableHisPayment = () => {
         let text = "";
         if (status === 0) {
           color = "orange";
-          text = "Đang xử lý";
+          text = "Đang chờ xác nhận";
         } else if (status === 1) {
           color = "yellow";
-          text = "Đã xác nhận";
+          text = "Đã xác nhận đơn hàng";
         } else if (status === 2) {
-          color = "green";
+          color = "lime";
           text = "Đang giao hàng";
         } else if (status === 3) {
           color = "green";
-          text = "Đã giao hàng";
+          text = "Đã nhận được hàng";
         } else if (status === 4) {
+          color = "purple";
+          text = "Chưa nhận được hàng";
+        } else if (status === 5) {
           color = "red";
           text = "Đã hủy";
         }
         return <Badge color={color} text={text} />;
       },
     },
-  ];
+    {
+      // button
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space wrap>
+          {record.status === 0 && (
+            <>
+              <Button
+                type="primary"
+                danger
+                onClick={(e) => {
+                  e.preventDefault();
 
+                  onCancelOrder(record);
+                }}
+              >
+                Hủy đơn hàng
+              </Button>
+            </>
+          )}
+          {record.status === 2 && (
+            <>
+              <Button
+                type="primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onConfirmOrder(record);
+                }}
+              >
+                Đã nhận được hàng
+              </Button>
+              <Button
+                danger
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  onNotConfirmOrder(record);
+                }}
+              >
+                Chưa nhận được hàng
+              </Button>
+            </>
+          )}
+          {record.status === 5 && (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                onReOrder(record);
+              }}
+            >
+              Đặt lại đơn hàng
+            </Button>
+          )}
+        </Space>
+      ),
+    },
+  ];
+  console.log("newOrders", newOrders);
   return (
     <div className="ml-[180px] p-4">
       <Table
@@ -165,9 +285,9 @@ const TableHisPayment = () => {
           expandedRowRender,
           defaultExpandedRowKeys: ["0"],
           // close when click on other row
-          expandRowByClick: true,
+          // expandRowByClick: true,
         }}
-        dataSource={newOrders}
+        dataSource={newOrders || []}
       />
     </div>
   );
