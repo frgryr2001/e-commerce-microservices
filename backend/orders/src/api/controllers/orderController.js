@@ -283,7 +283,7 @@ class OrderController {
 			try {
 				let service_id = await axios
 					.post(
-						'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services',
+						`${process.env.GHN_URL}/shiip/public-api/v2/shipping-order/available-services`,
 						{
 							from_district: 1449,
 							to_district: district_id,
@@ -310,7 +310,7 @@ class OrderController {
 					});
 				let data = await axios
 					.post(
-						'https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee',
+						`${process.env.GHN_URL}/shiip/public-api/v2/shipping-order/fee`,
 						{
 							from_district_id: 1449,
 							to_district_id: district_id,
