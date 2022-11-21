@@ -78,8 +78,10 @@ const Cart = () => {
             <Button
               size="sm"
               onClick={() => {
-                dispatch(getVoucherByCode(voucherText));
-                setVoucherText("");
+                if (voucherText !== "") {
+                  dispatch(getVoucherByCode(voucherText));
+                  setVoucherText("");
+                }
               }}
             >
               Áp dụng

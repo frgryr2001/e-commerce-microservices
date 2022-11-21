@@ -9,6 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth?.token);
   const user = useSelector((state) => state.users?.users.length);
+  const productTotal = useSelector((state) => state.products?.products?.length);
 
   useEffect(() => {
     if (!token) {
@@ -74,6 +75,15 @@ const Dashboard = () => {
         <span className="flex p-7 bg-[#F0FCED] rounded-2xl justify-between w-full h-[180px] flex-col">
           <p className="mb-0 text-base text-gray-500">TỔNG SỐ NGƯỜI DÙNG</p>
           <p className="text-[28px] text-gray-800 mb-0 font-bold">{user}</p>
+          <p className="mb-0 text-base text-gray-500"></p>
+        </span>
+        <span className="flex p-7 bg-[#F0FCED] rounded-2xl justify-between w-full h-[180px] flex-col">
+          <p className="mb-0 text-base text-gray-500">
+            TỔNG SẢN PHẨM TRONG KHO
+          </p>
+          <p className="text-[28px] text-gray-800 mb-0 font-bold">
+            {productTotal}
+          </p>
           <p className="mb-0 text-base text-gray-500"></p>
         </span>
       </div>

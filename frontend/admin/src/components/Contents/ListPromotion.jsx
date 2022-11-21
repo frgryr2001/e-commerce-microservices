@@ -17,6 +17,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 
 const ListPromotion = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const token = useSelector((state) => state.auth?.token);
 
   const columns = [
     {
@@ -123,7 +124,7 @@ const ListPromotion = () => {
       okText: "Xóa",
       cancelText: "Hủy",
       onOk: () => {
-        dispatch(deleteVoucher({ id: record._id, toast }));
+        dispatch(deleteVoucher({ id: record._id, toast, token }));
       },
     });
   };
@@ -162,6 +163,7 @@ const ListPromotion = () => {
               },
               toast,
               id: form.id,
+              token,
             })
           );
           resetEditing();

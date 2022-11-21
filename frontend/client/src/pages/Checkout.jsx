@@ -6,7 +6,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../redux/Orders/orderSlice";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 const Checkout = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user?.token);
@@ -26,19 +26,18 @@ const Checkout = () => {
   const [costShip, setCostShip] = React.useState(0);
   const addressRef = React.useRef();
 
+  const [check, setCheck] = React.useState(false);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     const fetchProvinceAPI = async () => {
-      const res = await axios.get(
-        "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province",
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            token: "84516f27-5f78-11ed-bae6-52e24d27983f",
-          },
-        }
-      );
+      const res = await axios.get(`${process.env.REACT_APP_API_GHN}/province`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          token: "61571068-6961-11ed-b190-ea4934f9883e",
+        },
+      });
       const data = await res.data;
 
       return data;
@@ -51,7 +50,7 @@ const Checkout = () => {
   useEffect(async () => {
     const fetchDistrictAPI = async () => {
       const res = await axios.post(
-        "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district",
+        `${process.env.REACT_APP_API_GHN}/district`,
         {
           province_id: provinceChoice,
         },
@@ -59,7 +58,7 @@ const Checkout = () => {
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-            token: "84516f27-5f78-11ed-bae6-52e24d27983f",
+            token: "61571068-6961-11ed-b190-ea4934f9883e",
           },
         }
       );
@@ -76,13 +75,13 @@ const Checkout = () => {
     if (districtChoice !== 0) {
       const fetchDistrictAPI = async () => {
         const res = await axios.get(
-          `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtChoice}`,
+          `${process.env.REACT_APP_API_GHN}/ward?district_id=${districtChoice}`,
           {
             headers: {
               "Access-Control-Allow-Origin": "*",
               "Access-Control-Allow-Methods":
                 "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-              token: "84516f27-5f78-11ed-bae6-52e24d27983f",
+              token: "61571068-6961-11ed-b190-ea4934f9883e",
             },
           }
         );
@@ -131,10 +130,10 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    if (districtChoice !== 0 && wardChoice !== 0) {
+    if (provinceChoice && districtChoice !== 0 && wardChoice !== 0) {
       fetchFeeShip();
     }
-  }, [districtChoice, wardChoice, fetchFeeShip]);
+  }, [provinceChoice, districtChoice, wardChoice, fetchFeeShip]);
 
   const listProvinceIdName = provinceList?.map((item) => {
     return { value: item.ProvinceID, label: item.ProvinceName };
@@ -174,163 +173,179 @@ const Checkout = () => {
       voucher_code: code || "",
       products: newCartProduct,
     };
-    dispatch(createOrder({ order, token, toast, dispatch }));
+    dispatch(createOrder({ order, token, toast, dispatch, setCheck }));
   };
 
   return (
     <div className={classes.row}>
-      <div className={classes["col-50"]}>
-        <div className={classes.container}>
-          <form action="/action_page.php">
-            <div className={classes.row}>
-              <div className={classes["col-50"]}>
-                voucher: {code}
-                <h3>Hóa đơn địa chỉ </h3>
-                <label htmlFor="fname">Họ tên</label>
-                <input
-                  type="text"
-                  id="fname"
-                  name="firstname"
-                  defaultValue={user?.fullname}
-                  readOnly
-                />
-                <label htmlFor="email">Email</label>
-                <input
-                  type="text"
-                  id="email"
-                  name="email"
-                  defaultValue={user?.email}
-                  readOnly
-                />
-                <label htmlFor="phone">Số điện thoại</label>
-                <input
-                  type="text"
-                  id="phone"
-                  name="phone"
-                  // value={user.phone}
-                  defaultValue={user?.phone}
-                  readOnly
-                />
-                <label htmlFor="adr">Địa chỉ</label>
-                <input type="text" id="adr" name="address" ref={addressRef} />
-              </div>
-
-              <div className={classes["col-50"]}>
-                <h3>Địa chỉ</h3>
-
-                <label htmlFor="cname">Tỉnh</label>
-                <SelectOption
-                  listProvinceIdName={listProvinceIdName}
-                  setProvinceChoice={setProvinceChoice}
-                />
-                <label htmlFor="ccnum">Quận/Huyện</label>
-                <SelectOption
-                  listDistrictIdName={listDistrictIdName}
-                  setDistrictChoice={setDistrictChoice}
-                />
-                <label htmlFor="expmonth">Xã</label>
-                <SelectOption
-                  listWardIdName={listWardIdName}
-                  setWardsChoice={setWardsChoice}
-                />
-              </div>
-            </div>
-
-            <input
-              value="Thanh toán"
-              className={classes.btn}
-              onClick={onPaymentClick}
-              style={{ textAlign: "center" }}
-            />
-          </form>
+      {check && (
+        <div>
+          {/* đặt hàng thành công */}
+          <p className={classes.success}>Đặt hàng thành công</p>
+          <Link to="/catalog">Tiếp tục mua hàng</Link>
         </div>
-      </div>
-      <div className={classes["col-50"]}>
-        <div className={classes.container}>
-          <h4>
-            Cart
-            <span className={classes.price} style={{ color: "black" }}>
-              <ShoppingCartOutlined />
-              <b>{totalQuantity}</b>
-            </span>
-          </h4>
+      )}
+      {!check && (
+        <>
+          <div className={classes["col-50"]}>
+            <div className={classes.container}>
+              <form action="/action_page.php">
+                <div className={classes.row}>
+                  <div className={classes["col-50"]}>
+                    voucher: {code}
+                    <h3>Hóa đơn địa chỉ </h3>
+                    <label htmlFor="fname">Họ tên</label>
+                    <input
+                      type="text"
+                      id="fname"
+                      name="firstname"
+                      defaultValue={user?.fullname}
+                      readOnly
+                    />
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="text"
+                      id="email"
+                      name="email"
+                      defaultValue={user?.email}
+                      readOnly
+                    />
+                    <label htmlFor="phone">Số điện thoại</label>
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      // value={user.phone}
+                      defaultValue={user?.phone}
+                      readOnly
+                    />
+                    <label htmlFor="adr">Địa chỉ</label>
+                    <input
+                      type="text"
+                      id="adr"
+                      name="address"
+                      ref={addressRef}
+                    />
+                  </div>
 
-          {cartItems.map((item) => {
-            return (
+                  <div className={classes["col-50"]}>
+                    <h3>Địa chỉ</h3>
+
+                    <label htmlFor="cname">Tỉnh</label>
+                    <SelectOption
+                      listProvinceIdName={listProvinceIdName}
+                      setProvinceChoice={setProvinceChoice}
+                    />
+                    <label htmlFor="ccnum">Quận/Huyện</label>
+                    <SelectOption
+                      listDistrictIdName={listDistrictIdName}
+                      setDistrictChoice={setDistrictChoice}
+                    />
+                    <label htmlFor="expmonth">Xã</label>
+                    <SelectOption
+                      listWardIdName={listWardIdName}
+                      setWardsChoice={setWardsChoice}
+                    />
+                  </div>
+                </div>
+
+                <input
+                  value="Thanh toán"
+                  className={classes.btn}
+                  onClick={onPaymentClick}
+                  style={{ textAlign: "center" }}
+                />
+              </form>
+            </div>
+          </div>
+          <div className={classes["col-50"]}>
+            <div className={classes.container}>
+              <h4>
+                Cart
+                <span className={classes.price} style={{ color: "black" }}>
+                  <ShoppingCartOutlined />
+                  <b>{totalQuantity}</b>
+                </span>
+              </h4>
+
+              {cartItems.map((item) => {
+                return (
+                  <p>
+                    <a href={`/catalog/${item.slug}`}>
+                      {item.slug}-{item.color}-{item.size} x {item.quantity}
+                    </a>{" "}
+                    <span className={classes.price}>
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(item.price)}{" "}
+                    </span>
+                  </p>
+                );
+              })}
+
+              <hr />
               <p>
-                <a href={`/catalog/${item.slug}`}>
-                  {item.slug}-{item.color}-{item.size} x {item.quantity}
-                </a>{" "}
-                <span className={classes.price}>
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(item.price)}{" "}
+                Tổng tiền{" "}
+                <span className={classes.price} style={{ color: "black" }}>
+                  <b>
+                    {
+                      // total to VND price
+                      new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(total)
+                    }
+                  </b>
                 </span>
               </p>
-            );
-          })}
 
-          <hr />
-          <p>
-            Tổng tiền{" "}
-            <span className={classes.price} style={{ color: "black" }}>
-              <b>
-                {
-                  // total to VND price
-                  new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(total)
-                }
-              </b>
-            </span>
-          </p>
-
-          <p>
-            Tiền giảm{" "}
-            <span className={classes.price} style={{ color: "black" }}>
-              <b>
-                {
-                  // total to VND price
-                  new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format((total * discount) / 100)
-                }
-              </b>
-            </span>
-          </p>
-          <p>
-            Tiền vận chuyển{" "}
-            <span className={classes.price} style={{ color: "black" }}>
-              <b>
-                {
-                  // total to VND price
-                  new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(costShip)
-                }
-              </b>
-            </span>
-          </p>
-          <p>
-            Thành tiền{" "}
-            <span className={classes.price} style={{ color: "black" }}>
-              <b>
-                {
-                  // total to VND price
-                  new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(total - (total * discount) / 100 + costShip)
-                }
-              </b>
-            </span>
-          </p>
-        </div>
-      </div>
+              <p>
+                Tiền giảm{" "}
+                <span className={classes.price} style={{ color: "black" }}>
+                  <b>
+                    {
+                      // total to VND price
+                      new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format((total * discount) / 100)
+                    }
+                  </b>
+                </span>
+              </p>
+              <p>
+                Tiền vận chuyển{" "}
+                <span className={classes.price} style={{ color: "black" }}>
+                  <b>
+                    {
+                      // total to VND price
+                      new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(costShip)
+                    }
+                  </b>
+                </span>
+              </p>
+              <p>
+                Thành tiền{" "}
+                <span className={classes.price} style={{ color: "black" }}>
+                  <b>
+                    {
+                      // total to VND price
+                      new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(total - (total * discount) / 100 + costShip)
+                    }
+                  </b>
+                </span>
+              </p>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

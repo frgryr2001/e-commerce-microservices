@@ -19,12 +19,18 @@ export const getAllCategories = createAsyncThunk(
 // create category
 export const createCategory = createAsyncThunk(
   "category/createCategory",
-  async ({ categoryName, form, toast }, { rejectWithValue }) => {
+  async ({ categoryName, form, toast, token }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_PRODUCT_URL}/category`,
         {
           name: categoryName,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       form.resetFields();
@@ -38,12 +44,18 @@ export const createCategory = createAsyncThunk(
 // update category
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
-  async ({ categoryName, toast, id }, { rejectWithValue }) => {
+  async ({ categoryName, toast, id, token }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API_PRODUCT_URL}/category/${id}`,
         {
           name: categoryName,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -58,10 +70,16 @@ export const updateCategory = createAsyncThunk(
 // delete category
 export const deleteCategory = createAsyncThunk(
   "category/deleteCategory",
-  async ({ id, toast }, { rejectWithValue }) => {
+  async ({ id, toast, token }, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_PRODUCT_URL}/category/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/category/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("Xóa danh mục sản phẩm thành công");
       return response.data;

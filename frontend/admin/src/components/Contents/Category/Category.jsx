@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 const Category = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth?.token);
   const isLoading = useSelector(
     (state) => state.categories?.status === "loading"
   );
@@ -19,7 +20,7 @@ const Category = () => {
   );
   const onFinish = (values) => {
     const { categoryName } = values;
-    dispatch(createCategory({ categoryName, form, toast }));
+    dispatch(createCategory({ categoryName, form, toast, token }));
   };
 
   useEffect(() => {

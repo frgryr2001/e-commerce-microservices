@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const createProduct = createAsyncThunk(
   "product/createProduct",
-  async ({ product, form, toast }, { rejectWithValue }) => {
+  async ({ product, form, toast, token }, { rejectWithValue }) => {
     try {
       const product_options = product.product_options;
       console.log("test", product);
@@ -32,6 +32,7 @@ export const createProduct = createAsyncThunk(
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       };
       const { data } = await axios.post(
@@ -66,10 +67,16 @@ export const getAllProducts = createAsyncThunk(
 // delete product
 export const deleteProduct = createAsyncThunk(
   "product/deleteProduct",
-  async ({ id, toast }, { rejectWithValue }) => {
+  async ({ id, toast, token }, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `${process.env.REACT_APP_API_PRODUCT_URL}/products/${id}`
+        `${process.env.REACT_APP_API_PRODUCT_URL}/products/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       toast.success("Xóa sản phẩm thành công");
       return data;
