@@ -69,8 +69,8 @@ export const deleteProduct = createAsyncThunk(
   "product/deleteProduct",
   async ({ id, toast, token }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(
-        `${process.env.REACT_APP_API_PRODUCT_URL}/products/${id}`,
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API_PRODUCT_URL}/products/hide/${id}`,
         {
           headers: {
             "Content-Type": "application/json",
